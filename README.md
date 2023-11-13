@@ -18,7 +18,7 @@
 
 9. **Dodawanie zdjęć potraw**
 
-10. **Wyszukiwanie przepisów według składników**
+10. **Wyszukiwanie przepisów**
 
 11. **Dodawanie listy składników do przepisu**
 
