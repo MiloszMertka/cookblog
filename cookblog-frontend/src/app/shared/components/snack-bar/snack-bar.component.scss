@@ -1,0 +1,23 @@
+@use "@angular/material" as mat;
+
+:host {
+  display: flex;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.error {
+  color: mat.get-color-from-palette(mat.$red-palette);
+}
+
+.success {
+  color: mat.get-color-from-palette(mat.$green-palette);
+}
+
+.info {
+  color: mat.get-color-from-palette(mat.$blue-palette);
+}
