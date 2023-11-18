@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { PageQuery } from '../pagination/page-query';
 import { environment } from '../../../environments/environment';
 import { PageResponse } from '../pagination/page-response';
@@ -28,7 +28,7 @@ export class RecipeService {
 
   searchRecipes(query: string) {
     return this.httpClient.get<RecipeResource[]>(
-      `${environment.apiBaseUrl}${RecipeService.RECIPES_ENDPOINT}/${query}`,
+      `${environment.apiBaseUrl}${RecipeService.RECIPES_ENDPOINT}/search/${query}`,
     );
   }
 

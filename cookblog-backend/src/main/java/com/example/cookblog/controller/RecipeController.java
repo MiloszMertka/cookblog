@@ -28,7 +28,7 @@ class RecipeController {
         return ResponseEntity.ok(pageOfRecipes);
     }
 
-    @GetMapping("/{query}")
+    @GetMapping("/search/{query}")
     public ResponseEntity<List<RecipeResource>> searchRecipes(@PathVariable String query) {
         final var foundRecipes = recipeUseCases.searchRecipes(query);
         return ResponseEntity.ok(foundRecipes);

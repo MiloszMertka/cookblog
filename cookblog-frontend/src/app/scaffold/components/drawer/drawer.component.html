@@ -1,0 +1,16 @@
+<mat-drawer-container class="container">
+  <mat-drawer [opened]="opened" class="drawer" mode="side">
+    <mat-nav-list>
+      <a mat-list-item routerLink="">All recipies</a>
+      <a
+        *ngFor="let category of categories$ | async"
+        [routerLink]="['categories', category.id]"
+        mat-list-item
+        >{{ category.name }}</a
+      >
+    </mat-nav-list>
+  </mat-drawer>
+  <div class="content">
+    <ng-content></ng-content>
+  </div>
+</mat-drawer-container>

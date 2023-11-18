@@ -1,0 +1,31 @@
+.container {
+  height: 100%;
+}
+
+.card {
+  height: 100%;
+}
+
+.header {
+  padding: 1rem;
+}
+
+.image {
+  display: block;
+  width: 100%;
+}
+
+.content {
+  margin-top: 1rem;
+  text-align: justify;
+  line-height: 1.65;
+}
+
+.actions {
+  margin-top: auto;
+  padding: 1rem;
+}
+
+.button {
+  text-transform: uppercase;
+}

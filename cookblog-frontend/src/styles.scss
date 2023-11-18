@@ -1,4 +1,89 @@
-/* You can add global styles to this file, and also import other style files */
+@use "@angular/material" as mat;
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+@include mat.core();
+
+$app-primary-palette: (
+  50: #f9fbe7,
+  100: #f0f4c3,
+  200: #e6ee9c,
+  300: #dce775,
+  400: #d4e157,
+  500: #cddc39,
+  600: #c0ca33,
+  700: #afb42b,
+  800: #9e9d24,
+  900: #827717,
+  contrast: (
+    50: #232323,
+    100: #232323,
+    200: #232323,
+    300: #232323,
+    400: #232323,
+    500: #232323,
+    600: #232323,
+    700: #232323,
+    800: #232323,
+    900: #232323,
+  ),
+);
+
+$app-secondary-palette: (
+  50: #fbfbfb,
+  100: #f6f6f6,
+  200: #f2f2f2,
+  300: #e8e8e8,
+  400: #c6c6c6,
+  500: #a8a8a8,
+  600: #7e7e7e,
+  700: #6a6a6a,
+  800: #4a4a4a,
+  900: #282828,
+  contrast: (
+    50: #232323,
+    100: #232323,
+    200: #232323,
+    300: #232323,
+    400: #232323,
+    500: #232323,
+    600: #232323,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+  ),
+);
+
+$cookblog-app-primary: mat.define-palette($app-primary-palette, 500);
+$cookblog-app-accent: mat.define-palette($app-secondary-palette, 500);
+
+$cookblog-app-warn: mat.define-palette(mat.$red-palette);
+$cookblog-app-success: mat.define-palette(mat.$green-palette);
+$cookblog-app-info: mat.define-palette(mat.$blue-palette);
+
+$cookblog-app-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $cookblog-app-primary,
+      accent: $cookblog-app-accent,
+      warn: $cookblog-app-warn,
+    ),
+  )
+);
+
+@include mat.all-component-themes($cookblog-app-theme);
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: mat.get-color-from-palette($cookblog-app-primary, 50);
+}

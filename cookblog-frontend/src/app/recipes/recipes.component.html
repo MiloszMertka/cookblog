@@ -1,0 +1,15 @@
+<div class="container">
+  <main class="grid">
+    <app-recipe-card
+      *ngFor="let recipe of recipes$ | async"
+      [recipe]="recipe"
+    ></app-recipe-card>
+  </main>
+  <app-footer
+    (nextPageClick)="handleNextPageClicked()"
+    (previousPageClick)="handlePreviousPageClicked()"
+    *ngIf="paginated"
+    [isFirstPage]="isFirstPage"
+    [isLastPage]="isLastPage"
+  ></app-footer>
+</div>

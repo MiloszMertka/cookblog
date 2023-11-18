@@ -1,0 +1,7 @@
+<app-toolbar
+  (menuButtonClick)="handleMenuButtonClicked()"
+  (searchButtonClick)="handleSearchButtonClicked($event)"
+></app-toolbar>
+<app-drawer [categories$]="categories$" [opened]="drawerOpened">
+  <ng-content></ng-content>
+</app-drawer>

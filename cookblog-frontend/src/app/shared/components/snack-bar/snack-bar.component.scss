@@ -1,4 +1,5 @@
 @use "@angular/material" as mat;
+@use "src/styles" as styles;
 
 :host {
   display: flex;
@@ -11,13 +12,13 @@
 }
 
 .error {
-  color: mat.get-color-from-palette(mat.$red-palette);
+  color: mat.get-color-from-palette(styles.$cookblog-app-warn);
 }
 
 .success {
-  color: mat.get-color-from-palette(mat.$green-palette);
+  color: mat.get-color-from-palette(styles.$cookblog-app-success);
 }
 
 .info {
-  color: mat.get-color-from-palette(mat.$blue-palette);
+  color: mat.get-color-from-palette(styles.$cookblog-app-info);
 }
