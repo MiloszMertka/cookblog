@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { RecipesModule } from './recipes/recipes.module';
 import { ScaffoldModule } from './scaffold/scaffold.module';
+import { RecipeModule } from './recipe/recipe.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -19,6 +20,7 @@ import { ScaffoldModule } from './scaffold/scaffold.module';
     HttpClientModule,
     ScaffoldModule,
     RecipesModule,
+    RecipeModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

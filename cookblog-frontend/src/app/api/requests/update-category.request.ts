@@ -1,4 +1,6 @@
-export class UpdateCategoryRequest {
+import { Request } from './request';
+
+export class UpdateCategoryRequest implements Request {
   private readonly _name: string;
 
   constructor(name: string) {
@@ -7,5 +9,11 @@ export class UpdateCategoryRequest {
 
   get name(): string {
     return this._name;
+  }
+
+  toRequestBody() {
+    return {
+      name: this._name,
+    };
   }
 }

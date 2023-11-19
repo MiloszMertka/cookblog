@@ -1,4 +1,6 @@
-export class CommentRecipeRequest {
+import { Request } from './request';
+
+export class CommentRecipeRequest implements Request {
   private readonly _author: string;
   private readonly _content: string;
 
@@ -13,5 +15,12 @@ export class CommentRecipeRequest {
 
   get content(): string {
     return this._content;
+  }
+
+  toRequestBody() {
+    return {
+      author: this._author,
+      content: this._content,
+    };
   }
 }

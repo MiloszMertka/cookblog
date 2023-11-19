@@ -1,7 +1,7 @@
 export enum UnitResource {
-  Gram,
-  Kilogram,
-  Liter,
-  Milliliter,
-  Piece,
+  Gram = 'g',
+  Kilogram = 'kg',
+  Liter = 'l',
+  Milliliter = 'ml',
+  Piece = 'pc.',
 }

@@ -41,14 +41,14 @@ export class RecipeService {
   createRecipe(createRecipeRequest: CreateRecipeRequest) {
     return this.httpClient.post<void>(
       `${environment.apiBaseUrl}${RecipeService.RECIPES_ENDPOINT}`,
-      createRecipeRequest,
+      createRecipeRequest.toRequestBody(),
     );
   }
 
   updateRecipe(id: number, updateRecipeRequest: UpdateRecipeRequest) {
     return this.httpClient.patch<void>(
       `${environment.apiBaseUrl}${RecipeService.RECIPES_ENDPOINT}/${id}`,
-      updateRecipeRequest,
+      updateRecipeRequest.toRequestBody(),
     );
   }
 
@@ -61,7 +61,7 @@ export class RecipeService {
   commentRecipe(id: number, commentRecipeRequest: CommentRecipeRequest) {
     return this.httpClient.post<void>(
       `${environment.apiBaseUrl}${RecipeService.RECIPES_ENDPOINT}/${id}/comment`,
-      commentRecipeRequest,
+      commentRecipeRequest.toRequestBody(),
     );
   }
 

@@ -28,14 +28,14 @@ export class CategoryService {
   createCategory(createCategoryRequest: CreateCategoryRequest) {
     return this.httpClient.post<void>(
       `${environment.apiBaseUrl}${CategoryService.CATEGORIES_ENDPOINT}`,
-      createCategoryRequest,
+      createCategoryRequest.toRequestBody(),
     );
   }
 
   updateCategory(id: number, updateCategoryRequest: UpdateCategoryRequest) {
     return this.httpClient.patch<void>(
       `${environment.apiBaseUrl}${CategoryService.CATEGORIES_ENDPOINT}/${id}`,
-      updateCategoryRequest,
+      updateCategoryRequest.toRequestBody(),
     );
   }
 

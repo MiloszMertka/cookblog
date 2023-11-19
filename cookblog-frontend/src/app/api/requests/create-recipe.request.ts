@@ -1,8 +1,9 @@
 import { IngredientResource } from '../resources/ingredient.resource';
 import { ImageResource } from '../resources/image.resource';
 import { CategoryResource } from '../resources/category.resource';
+import { Request } from './request';
 
-export class CreateRecipeRequest {
+export class CreateRecipeRequest implements Request {
   private readonly _title: string;
   private readonly _description: string;
   private readonly _ingredients: IngredientResource[];
@@ -69,5 +70,29 @@ export class CreateRecipeRequest {
 
   get calorificValue() {
     return this._calorificValue;
+  }
+
+  toRequestBody() {
+    return {
+      title: this._title,
+      description: this._description,
+      ingredients: this._ingredients.map((ingredient) => ({
+        name: ingredient.name,
+        quantity: {
+          amount: ingredient.quantity.amount,
+          unit: ingredient.quantity.unit,
+        },
+      })),
+      instructions: this._instructions,
+      image: {
+        path: this._image.path,
+      },
+      category: {
+        name: this._category.name,
+      },
+      preparationTimeInMinutes: this._preparationTimeInMinutes,
+      portions: this._portions,
+      calorificValue: this._calorificValue,
+    };
   }
 }

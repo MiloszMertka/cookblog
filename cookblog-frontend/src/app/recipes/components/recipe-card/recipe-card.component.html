@@ -15,7 +15,14 @@
       </p>
     </mat-card-content>
     <mat-card-actions class="actions">
-      <button class="button" color="primary" mat-raised-button>Read</button>
+      <a
+        [routerLink]="['/', 'recipes', recipe.id]"
+        class="button"
+        color="primary"
+        mat-raised-button
+      >
+        Read
+      </a>
     </mat-card-actions>
   </mat-card>
 </article>
