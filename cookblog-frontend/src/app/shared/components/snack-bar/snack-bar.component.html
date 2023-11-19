@@ -1,0 +1,30 @@
+<div class="label" matSnackBarLabel>
+  <ng-container [ngSwitch]="data.type">
+    <mat-icon
+      *ngSwitchCase="SnackBarType.Success"
+      class="success"
+      fontIcon="check_circle"
+    ></mat-icon>
+    <mat-icon
+      *ngSwitchCase="SnackBarType.Error"
+      class="error"
+      fontIcon="error"
+    ></mat-icon>
+    <mat-icon
+      *ngSwitchCase="SnackBarType.Info"
+      class="info"
+      fontIcon="info"
+    ></mat-icon>
+  </ng-container>
+  <span>{{ data.message }}</span>
+</div>
+<span matSnackBarActions>
+  <button
+    (click)="snackBarRef.dismissWithAction()"
+    mat-button
+    matSnackBarAction
+    type="button"
+  >
+    OK
+  </button>
+</span>

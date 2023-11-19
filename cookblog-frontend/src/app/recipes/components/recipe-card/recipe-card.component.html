@@ -1,0 +1,28 @@
+<article class="container">
+  <mat-card class="card">
+    <mat-card-header class="header">
+      <mat-card-title>{{ recipe.title }}</mat-card-title>
+    </mat-card-header>
+    <img
+      alt="Photo of a Shiba Inu"
+      class="image"
+      mat-card-image
+      src="https://material.angular.io/assets/img/examples/shiba2.jpg"
+    />
+    <mat-card-content class="content">
+      <p>
+        {{ recipe.description }}
+      </p>
+    </mat-card-content>
+    <mat-card-actions class="actions">
+      <a
+        [routerLink]="['/', 'recipes', recipe.id]"
+        class="button"
+        color="primary"
+        mat-raised-button
+      >
+        Read
+      </a>
+    </mat-card-actions>
+  </mat-card>
+</article>

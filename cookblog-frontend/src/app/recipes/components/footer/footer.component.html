@@ -1,0 +1,16 @@
+<footer class="container">
+  <button
+    (click)="handlePreviousPageClicked()"
+    [disabled]="isFirstPage"
+    mat-icon-button
+  >
+    <mat-icon>navigate_before</mat-icon>
+  </button>
+  <button
+    (click)="handleNextPageClicked()"
+    [disabled]="isLastPage"
+    mat-icon-button
+  >
+    <mat-icon>navigate_next</mat-icon>
+  </button>
+</footer>

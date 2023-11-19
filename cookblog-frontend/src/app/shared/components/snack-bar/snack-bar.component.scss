@@ -1,0 +1,24 @@
+@use "@angular/material" as mat;
+@use "src/styles" as styles;
+
+:host {
+  display: flex;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.error {
+  color: mat.get-color-from-palette(styles.$cookblog-app-warn);
+}
+
+.success {
+  color: mat.get-color-from-palette(styles.$cookblog-app-success);
+}
+
+.info {
+  color: mat.get-color-from-palette(styles.$cookblog-app-info);
+}
