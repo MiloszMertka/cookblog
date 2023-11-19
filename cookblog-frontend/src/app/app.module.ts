@@ -5,10 +5,11 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { RecipesModule } from './recipes/recipes.module';
 import { ScaffoldModule } from './scaffold/scaffold.module';
 import { RecipeModule } from './recipe/recipe.module';
+import { ErrorHandlerInterceptor } from './api/interceptors/error-handler.interceptor';
 
 @NgModule({
   declarations: [AppComponent],
@@ -22,7 +23,13 @@ import { RecipeModule } from './recipe/recipe.module';
     RecipesModule,
     RecipeModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorHandlerInterceptor,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

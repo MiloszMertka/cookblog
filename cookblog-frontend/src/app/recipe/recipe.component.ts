@@ -47,7 +47,6 @@ export class RecipeComponent implements OnInit {
 
   private commentRecipe(author: string, content: string) {
     const commentRecipeRequest = new CommentRecipeRequest(author, content);
-    console.log(commentRecipeRequest);
     this.recipeService
       .commentRecipe(this.recipeId!, commentRecipeRequest)
       .subscribe(() => {
