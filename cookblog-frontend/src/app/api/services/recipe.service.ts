@@ -7,6 +7,7 @@ import { RecipeResource } from '../resources/recipe.resource';
 import { CreateRecipeRequest } from '../requests/create-recipe.request';
 import { UpdateRecipeRequest } from '../requests/update-recipe.request';
 import { CommentRecipeRequest } from '../requests/comment-recipe.request';
+import { CategoryResource } from '../resources/category.resource';
 
 @Injectable({
   providedIn: 'root',
@@ -38,6 +39,12 @@ export class RecipeService {
     );
   }
 
+  getRecipeCategory(id: number) {
+    return this.httpClient.get<CategoryResource>(
+      `${environment.apiBaseUrl}${RecipeService.RECIPES_ENDPOINT}/${id}/category`,
+    );
+  }
+
   createRecipe(createRecipeRequest: CreateRecipeRequest) {
     return this.httpClient.post<void>(
       `${environment.apiBaseUrl}${RecipeService.RECIPES_ENDPOINT}`,
@@ -46,7 +53,7 @@ export class RecipeService {
   }
 
   updateRecipe(id: number, updateRecipeRequest: UpdateRecipeRequest) {
-    return this.httpClient.patch<void>(
+    return this.httpClient.put<void>(
       `${environment.apiBaseUrl}${RecipeService.RECIPES_ENDPOINT}/${id}`,
       updateRecipeRequest.toRequestBody(),
     );

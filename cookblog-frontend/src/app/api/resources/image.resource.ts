@@ -2,7 +2,7 @@ export class ImageResource {
   private readonly _id: number | null;
   private readonly _path: string;
 
-  constructor(id: number, path: string) {
+  constructor(id: number | null, path: string) {
     this._id = id;
     this._path = path;
   }

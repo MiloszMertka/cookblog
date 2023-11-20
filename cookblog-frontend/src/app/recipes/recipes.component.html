@@ -1,7 +1,9 @@
 <div class="container">
   <main class="grid">
     <app-recipe-card
+      (deleteButtonClick)="handleDeleteButtonClicked($event)"
       *ngFor="let recipe of recipes$ | async"
+      [isAuthenticated]="isAuthenticated"
       [recipe]="recipe"
     ></app-recipe-card>
   </main>
@@ -12,4 +14,13 @@
     [isFirstPage]="isFirstPage"
     [isLastPage]="isLastPage"
   ></app-footer>
+  <a
+    *ngIf="isAuthenticated"
+    class="fab"
+    color="primary"
+    mat-fab
+    routerLink="/recipes/create"
+  >
+    <mat-icon>add</mat-icon>
+  </a>
 </div>

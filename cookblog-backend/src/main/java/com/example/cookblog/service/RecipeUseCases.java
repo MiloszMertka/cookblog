@@ -3,6 +3,7 @@ package com.example.cookblog.service;
 import com.example.cookblog.dto.requests.CommentRecipeRequest;
 import com.example.cookblog.dto.requests.CreateRecipeRequest;
 import com.example.cookblog.dto.requests.UpdateRecipeRequest;
+import com.example.cookblog.dto.resources.CategoryResource;
 import com.example.cookblog.dto.resources.RecipeResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,8 @@ public interface RecipeUseCases {
     List<RecipeResource> searchRecipes(String query);
 
     RecipeResource getRecipe(Long id);
+
+    CategoryResource getRecipeCategory(Long id);
 
     void createRecipe(CreateRecipeRequest createRecipeRequest);
 

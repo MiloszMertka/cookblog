@@ -10,6 +10,7 @@ import { RecipesModule } from './recipes/recipes.module';
 import { ScaffoldModule } from './scaffold/scaffold.module';
 import { RecipeModule } from './recipe/recipe.module';
 import { ErrorHandlerInterceptor } from './api/interceptors/error-handler.interceptor';
+import { RecipeFormModule } from './recipe-form/recipe-form.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -22,6 +23,7 @@ import { ErrorHandlerInterceptor } from './api/interceptors/error-handler.interc
     ScaffoldModule,
     RecipesModule,
     RecipeModule,
+    RecipeFormModule,
   ],
   providers: [
     {

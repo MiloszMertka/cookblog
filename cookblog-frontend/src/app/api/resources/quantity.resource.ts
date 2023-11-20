@@ -5,7 +5,7 @@ export class QuantityResource {
   private readonly _amount: number;
   private readonly _unit: UnitResource;
 
-  constructor(id: number, amount: number, unit: UnitResource) {
+  constructor(id: number | null, amount: number, unit: UnitResource) {
     this._id = id;
     this._amount = amount;
     this._unit = unit;

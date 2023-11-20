@@ -17,7 +17,7 @@ public class Ingredient {
     @ToString.Exclude
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     @OneToOne(cascade = CascadeType.ALL, optional = false, orphanRemoval = true)

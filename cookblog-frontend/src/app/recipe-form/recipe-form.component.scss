@@ -1,0 +1,40 @@
+.container {
+  padding: 2rem 5%;
+}
+
+.heading {
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+
+  & > * {
+    flex: 1;
+  }
+}
+
+.delete-button {
+  flex: none !important;
+}
+
+.button {
+  align-self: center;
+  text-transform: uppercase;
+}
+
+.fab {
+  position: fixed;
+  bottom: 3rem;
+  right: 5rem;
+  z-index: 1;
+}

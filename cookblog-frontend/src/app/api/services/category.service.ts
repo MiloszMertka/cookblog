@@ -33,7 +33,7 @@ export class CategoryService {
   }
 
   updateCategory(id: number, updateCategoryRequest: UpdateCategoryRequest) {
-    return this.httpClient.patch<void>(
+    return this.httpClient.put<void>(
       `${environment.apiBaseUrl}${CategoryService.CATEGORIES_ENDPOINT}/${id}`,
       updateCategoryRequest.toRequestBody(),
     );

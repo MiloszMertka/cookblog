@@ -21,7 +21,9 @@
         <span>{{ ingredient.name }}</span>
         <span>
           {{ ingredient.quantity.amount }}
-          <span class="unit">{{ ingredient.quantity.unit }}</span></span
+          <span class="unit">{{
+            ingredient.quantity.unit | formatUnit
+          }}</span></span
         >
       </span>
     </li>

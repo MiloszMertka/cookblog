@@ -5,7 +5,7 @@ export class IngredientResource {
   private readonly _name: string;
   private readonly _quantity: QuantityResource;
 
-  constructor(id: number, name: string, quantity: QuantityResource) {
+  constructor(id: number | null, name: string, quantity: QuantityResource) {
     this._id = id;
     this._name = name;
     this._quantity = quantity;

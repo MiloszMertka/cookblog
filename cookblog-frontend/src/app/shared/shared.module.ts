@@ -13,6 +13,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
+import { DialogComponent } from './components/dialog/dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
+import { FormatUnitPipe } from './pipes/format-unit.pipe';
 
 const modulesToExport = [
   CommonModule,
@@ -28,11 +32,13 @@ const modulesToExport = [
   MatFormFieldModule,
   MatSidenavModule,
   MatListModule,
+  MatDialogModule,
+  MatSelectModule,
 ];
 
 @NgModule({
-  declarations: [SnackBarComponent],
+  declarations: [SnackBarComponent, DialogComponent, FormatUnitPipe],
   imports: [...modulesToExport],
-  exports: [...modulesToExport],
+  exports: [...modulesToExport, FormatUnitPipe],
 })
 export class SharedModule {}
