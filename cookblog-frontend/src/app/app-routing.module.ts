@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { RecipesComponent } from './recipes/recipes.component';
 import { RecipeComponent } from './recipe/recipe.component';
+import { RecipeFormComponent } from './recipe-form/recipe-form.component';
 
 const routes: Routes = [
   {
@@ -20,6 +21,14 @@ const routes: Routes = [
   {
     path: 'search/:query',
     component: RecipesComponent,
+  },
+  {
+    path: 'recipes/create',
+    component: RecipeFormComponent,
+  },
+  {
+    path: 'recipes/edit/:id',
+    component: RecipeFormComponent,
   },
   {
     path: 'recipes/:id',

@@ -14,9 +14,9 @@
 
 7. **Usuwanie komentarzy**
 
-8. **Usuwanie komentarzy jako administrator bloga**
+8. **Pobieranie kategorii dla danego przepisu**
 
-9. **Dodawanie zdjęć potraw**
+9. **Dodawanie zdjęć potraw (jako adres url do zdjęcia)**
 
 10. **Wyszukiwanie przepisów**
 

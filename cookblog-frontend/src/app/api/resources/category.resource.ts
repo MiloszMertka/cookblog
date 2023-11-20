@@ -5,7 +5,11 @@ export class CategoryResource {
   private readonly _name: string;
   private readonly _recipes: RecipeResource[] | null;
 
-  constructor(id: number, name: string, recipes: RecipeResource[]) {
+  constructor(
+    id: number | null,
+    name: string,
+    recipes: RecipeResource[] | null,
+  ) {
     this._id = id;
     this._name = name;
     this._recipes = recipes;

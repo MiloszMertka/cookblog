@@ -1,0 +1,120 @@
+<div class="container">
+  <h1 class="heading">{{ recipeId ? "Edit Recipe" : "Create Recipe" }}</h1>
+  <form (submit)="handleSubmit($event)" class="form">
+    <mat-form-field appearance="outline">
+      <mat-label>Title</mat-label>
+      <input [formControl]="recipeForm.controls.title" matInput type="text" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <textarea
+        [formControl]="recipeForm.controls.description"
+        matInput
+      ></textarea>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Instructions</mat-label>
+      <textarea
+        [formControl]="recipeForm.controls.instructions"
+        matInput
+      ></textarea>
+    </mat-form-field>
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Image</mat-label>
+        <input [formControl]="recipeForm.controls.image" matInput type="url" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Category</mat-label>
+        <mat-select [formControl]="recipeForm.controls.category">
+          <mat-option
+            *ngFor="let category of categories$ | async"
+            [value]="category.name"
+          >
+            {{ category.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Preparation time [min.]</mat-label>
+        <input
+          [formControl]="recipeForm.controls.preparationTimeInMinutes"
+          matInput
+          min="1"
+          type="number"
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Portions</mat-label>
+        <input
+          [formControl]="recipeForm.controls.portions"
+          matInput
+          min="1"
+          type="number"
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Calorific value [kcal]</mat-label>
+        <input
+          [formControl]="recipeForm.controls.calorificValue"
+          matInput
+          min="1"
+          type="number"
+        />
+      </mat-form-field>
+    </div>
+    <h2 class="heading">Ingredients</h2>
+    <div
+      *ngFor="
+        let ingredient of recipeForm.controls.ingredients.controls;
+        let i = index
+      "
+      class="row"
+    >
+      <button
+        (click)="handleDeleteIngredientButtonClicked(i)"
+        class="delete-button"
+        color="warn"
+        mat-icon-button
+        type="button"
+      >
+        <mat-icon> delete </mat-icon>
+      </button>
+      <mat-form-field appearance="outline">
+        <mat-label>Name</mat-label>
+        <input [formControl]="ingredient.controls.name" matInput type="text" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Amount</mat-label>
+        <input
+          [formControl]="ingredient.controls.amount"
+          matInput
+          min="1"
+          type="number"
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Unit</mat-label>
+        <mat-select [formControl]="ingredient.controls.unit">
+          <mat-option *ngFor="let unit of units" [value]="unit">
+            {{ unit | formatUnit }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <button
+      (click)="handleAddIngredientButtonClicked()"
+      class="button"
+      color="primary"
+      mat-raised-button
+      type="button"
+    >
+      Add ingredient
+    </button>
+    <button class="fab" color="primary" mat-fab>
+      <mat-icon>save</mat-icon>
+    </button>
+  </form>
+</div>

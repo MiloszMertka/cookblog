@@ -23,6 +23,24 @@
       >
         Read
       </a>
+      <a
+        *ngIf="isAuthenticated"
+        [routerLink]="['/', 'recipes', 'edit', recipe.id]"
+        class="button"
+        color="primary"
+        mat-raised-button
+      >
+        Edit
+      </a>
+      <button
+        (click)="handleDeleteButtonClicked()"
+        *ngIf="isAuthenticated"
+        class="button"
+        color="warn"
+        mat-raised-button
+      >
+        Delete
+      </button>
     </mat-card-actions>
   </mat-card>
 </article>

@@ -3,6 +3,7 @@ package com.example.cookblog.controller;
 import com.example.cookblog.dto.requests.CommentRecipeRequest;
 import com.example.cookblog.dto.requests.CreateRecipeRequest;
 import com.example.cookblog.dto.requests.UpdateRecipeRequest;
+import com.example.cookblog.dto.resources.CategoryResource;
 import com.example.cookblog.dto.resources.RecipeResource;
 import com.example.cookblog.service.RecipeUseCases;
 import jakarta.validation.Valid;
@@ -41,13 +42,19 @@ class RecipeController {
         return ResponseEntity.ok(recipe);
     }
 
+    @GetMapping("/{id}/category")
+    public ResponseEntity<CategoryResource> getRecipeCategory(@PathVariable Long id) {
+        final var category = recipeUseCases.getRecipeCategory(id);
+        return ResponseEntity.ok(category);
+    }
+
     @PostMapping
     public ResponseEntity<Void> createRecipe(@RequestBody @Valid CreateRecipeRequest createRecipeRequest) {
         recipeUseCases.createRecipe(createRecipeRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Void> updateRecipe(@PathVariable Long id, @RequestBody @Valid UpdateRecipeRequest updateRecipeRequest) {
         recipeUseCases.updateRecipe(id, updateRecipeRequest);
         return ResponseEntity.noContent().build();

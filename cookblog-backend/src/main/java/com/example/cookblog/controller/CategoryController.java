@@ -38,7 +38,7 @@ class CategoryController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Void> updateCategory(@PathVariable Long id, @RequestBody @Valid UpdateCategoryRequest updateCategoryRequest) {
         categoryUseCases.updateCategory(id, updateCategoryRequest);
         return ResponseEntity.noContent().build();

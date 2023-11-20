@@ -3,7 +3,9 @@ package com.example.cookblog.service.internal;
 import com.example.cookblog.dto.requests.CommentRecipeRequest;
 import com.example.cookblog.dto.requests.CreateRecipeRequest;
 import com.example.cookblog.dto.requests.UpdateRecipeRequest;
+import com.example.cookblog.dto.resources.CategoryResource;
 import com.example.cookblog.dto.resources.RecipeResource;
+import com.example.cookblog.mapper.CategoryMapper;
 import com.example.cookblog.mapper.CommentMapper;
 import com.example.cookblog.mapper.RecipeMapper;
 import com.example.cookblog.repository.RecipeRepository;
@@ -24,6 +26,7 @@ class RecipeService implements RecipeUseCases {
     private final RecipeRepository recipeRepository;
     private final RecipeMapper recipeMapper;
     private final CommentMapper commentMapper;
+    private final CategoryMapper categoryMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -46,6 +49,13 @@ class RecipeService implements RecipeUseCases {
     public RecipeResource getRecipe(Long id) {
         final var recipe = recipeRepository.findById(id).orElseThrow();
         return recipeMapper.mapRecipeToRecipeResource(recipe);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CategoryResource getRecipeCategory(Long id) {
+        final var recipe = recipeRepository.findById(id).orElseThrow();
+        return categoryMapper.mapCategoryToCategoryResource(recipe.getCategory());
     }
 
     @Override

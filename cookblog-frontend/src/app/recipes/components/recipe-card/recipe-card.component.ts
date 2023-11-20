@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
 import { RecipeResource } from '../../../api/resources/recipe.resource';
 
 @Component({
@@ -9,4 +15,10 @@ import { RecipeResource } from '../../../api/resources/recipe.resource';
 })
 export class RecipeCardComponent {
   @Input({ required: true }) recipe!: RecipeResource;
+  @Input({ required: true }) isAuthenticated!: boolean;
+  @Output() deleteButtonClick = new EventEmitter<RecipeResource>();
+
+  handleDeleteButtonClicked() {
+    this.deleteButtonClick.emit(this.recipe);
+  }
 }

@@ -5,6 +5,7 @@ import com.example.cookblog.dto.requests.UpdateRecipeRequest;
 import com.example.cookblog.dto.resources.RecipeResource;
 import com.example.cookblog.mapper.*;
 import com.example.cookblog.model.Recipe;
+import com.example.cookblog.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -17,6 +18,7 @@ class RecipeMapperService implements RecipeMapper {
     private final IngredientMapper ingredientMapper;
     private final ImageMapper imageMapper;
     private final CommentMapper commentMapper;
+    private final CategoryRepository categoryRepository;
     private CategoryMapper categoryMapper;
 
     @Lazy
@@ -56,7 +58,8 @@ class RecipeMapperService implements RecipeMapper {
                 .map(ingredientMapper::mapIngredientResourceToIngredient)
                 .toList();
         final var image = imageMapper.mapImageResourceToImage(createRecipeRequest.image());
-        final var category = categoryMapper.mapCategoryResourceToCategory(createRecipeRequest.category());
+        final var category = categoryRepository.findByName(createRecipeRequest.category().name())
+                .orElseThrow();
         final var recipe = Recipe.builder()
                 .title(createRecipeRequest.title())
                 .description(createRecipeRequest.description())
@@ -68,6 +71,7 @@ class RecipeMapperService implements RecipeMapper {
                 .category(category)
                 .build();
         recipe.getIngredients().addAll(ingredients);
+        category.getRecipes().add(recipe);
         return recipe;
     }
 
@@ -77,7 +81,9 @@ class RecipeMapperService implements RecipeMapper {
                 .map(ingredientMapper::mapIngredientResourceToIngredient)
                 .toList();
         final var image = imageMapper.mapImageResourceToImage(updateRecipeRequest.image());
-        final var category = categoryMapper.mapCategoryResourceToCategory(updateRecipeRequest.category());
+        final var category = categoryRepository.findByName(updateRecipeRequest.category().name())
+                .orElseThrow();
+        recipe.getCategory().getRecipes().remove(recipe);
         recipe.setTitle(updateRecipeRequest.title());
         recipe.setDescription(updateRecipeRequest.description());
         recipe.setInstructions(updateRecipeRequest.instructions());
@@ -88,6 +94,7 @@ class RecipeMapperService implements RecipeMapper {
         recipe.setCategory(category);
         recipe.getIngredients().clear();
         recipe.getIngredients().addAll(ingredients);
+        category.getRecipes().add(recipe);
     }
 
 }
