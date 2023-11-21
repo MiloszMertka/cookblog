@@ -47,6 +47,7 @@ public class RecipeStepDefinitions {
     private Recipe recipe;
     private Category category;
     private CreateRecipeRequest createRecipeRequest;
+    private UpdateRecipeRequest updateRecipeRequest;
     private ResultActions resultActions;
 
     @Before
@@ -157,7 +158,7 @@ public class RecipeStepDefinitions {
     @When("I get a recipe")
     public void iGetARecipe() throws Exception {
         resultActions = mockMvc.perform(get("/recipes/{id}",
-                recipeRepository.findByTitle("Feature: Create new recipe").getId()));
+                recipeRepository.findByTitle(createRecipeRequest.title()).getId()));
     }
 
     @Then("I should see created recipe")
@@ -203,30 +204,42 @@ public class RecipeStepDefinitions {
     }
 
     // Feature: Get a recipe
-    @Given("there is an existing recipe in the blog")
-    public void thereIsAnExistingRecipeInTheBlog() {
-    }
-
-    @When("I request to get the recipe by its ID")
-    public void iRequestToGetTheRecipeByItsID() throws Exception {
-        resultActions = mockMvc.perform(get("/recipes/{id}", 2L));
+    @When("I request to get the recipe by its ID {string}")
+    public void iRequestToGetTheRecipeByItsID(String title) throws Exception {
+        resultActions = mockMvc.perform(get("/recipes/{id}",
+                recipeRepository.findByTitle(title).getId()));
     }
 
     @Then("I should receive the details of the requested recipe")
     public void iShouldReceiveTheDetailsOfTheRequestedRecipe() throws Exception {
-
+        resultActions.andExpect(status().isOk())
+                .andExpectAll(
+                        jsonPath("$.id").exists(),
+                        jsonPath("$.title")
+                                .value(recipe.getTitle()),
+                        jsonPath("$.description")
+                                .value(recipe.getDescription()),
+                        jsonPath("$.ingredients[0].name")
+                                .value(recipe.getIngredients().iterator().next().getName()),
+                        jsonPath("$.ingredients[0].quantity.amount")
+                                .value(recipe.getIngredients().iterator().next().getQuantity().getAmount()),
+                        jsonPath("$.ingredients[0].quantity.unit")
+                                .value(recipe.getIngredients().iterator().next().getQuantity().getUnit().toString()),
+                        jsonPath("$.instructions")
+                                .value(recipe.getInstructions()),
+                        jsonPath("$.image.path")
+                                .value(recipe.getImage().getPath())
+                );
     }
+
     // Feature: Update a recipe
-
-    private UpdateRecipeRequest updateRecipeRequest;
-
     @Given("I prepared update data")
     public void thereIsExistingRecipe() {
         updateRecipeRequest = UpdateRecipeRequest.builder()
                 .title("Updated")
                 .description("description")
                 .ingredients(Set.of(IngredientResource.builder()
-                        .name("name")
+                        .name("ingredient")
                         .quantity(QuantityResource.builder()
                                 .amount(1)
                                 .unit(Unit.GRAM)
@@ -236,12 +249,9 @@ public class RecipeStepDefinitions {
                 .image(ImageResource.builder()
                         .path("image-path")
                         .build())
-                .preparationTimeInMinutes(1)
-                .portions(1)
-                .calorificValue(1)
                 .category(CategoryResource.builder()
                         .id(null)
-                        .name("category")
+                        .name(category.getName())
                         .recipes(null)
                         .build())
                 .build();
@@ -253,10 +263,11 @@ public class RecipeStepDefinitions {
         resultActions = mockMvc.perform(put("/recipes/{id}", recipe.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content));
+        recipe = recipeRepository.findById(recipe.getId()).orElse(null);
     }
 
     @Then("Recipe should be updated")
-    public void iShouldSeeUpdatedRecipe() throws Exception {
+    public void recipeShouldBeUpdated() throws Exception {
         resultActions.andExpect(status().isNoContent());
     }
 
