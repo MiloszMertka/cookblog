@@ -2,6 +2,10 @@
   (menuButtonClick)="handleMenuButtonClicked()"
   (searchButtonClick)="handleSearchButtonClicked($event)"
 ></app-toolbar>
-<app-drawer [categories$]="categories$" [opened]="drawerOpened">
+<app-drawer
+  (deleteCategoryClick)="handleDeleteCategoryClicked($event)"
+  [categories$]="categories$"
+  [opened]="drawerOpened"
+>
   <ng-content></ng-content>
 </app-drawer>
