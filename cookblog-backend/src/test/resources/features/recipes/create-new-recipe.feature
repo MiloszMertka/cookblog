@@ -5,5 +5,6 @@ Feature: Create new recipe
   Scenario: Create new recipe
     Given I prepared recipe data
     When I create new recipe
-    And I get all recipes
+    And I get a recipe
     Then I should see created recipe
+
