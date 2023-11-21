@@ -21,3 +21,13 @@
 .content {
   margin-top: 64px;
 }
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.button {
+  text-transform: uppercase;
+}

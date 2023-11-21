@@ -3,7 +3,7 @@ import { RecipeService } from '../api/services/recipe.service';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { UnitResource } from '../api/resources/unit.resource';
 import { CategoryService } from '../api/services/category.service';
-import { map, Observable, switchMap, tap } from 'rxjs';
+import { filter, map, Observable, switchMap, tap } from 'rxjs';
 import { CategoryResource } from '../api/resources/category.resource';
 import { CreateRecipeRequest } from '../api/requests/create-recipe.request';
 import { ImageResource } from '../api/resources/image.resource';
@@ -109,6 +109,7 @@ export class RecipeFormComponent implements OnInit {
         map((paramMap) =>
           parseInt(paramMap.get(RecipeFormComponent.ID_PARAM_KEY)!),
         ),
+        filter((id) => !isNaN(id)),
         tap((id) => (this.recipeId = id)),
         switchMap((id) => this.recipeService.getRecipe(id)),
       )

@@ -5,6 +5,7 @@
 <app-drawer
   (deleteCategoryClick)="handleDeleteCategoryClicked($event)"
   [categories$]="categories$"
+  [isAuthenticated]="isAuthenticated"
   [opened]="drawerOpened"
 >
   <ng-content></ng-content>

@@ -4,6 +4,7 @@ import { filter, Observable } from 'rxjs';
 import { CategoryResource } from '../api/resources/category.resource';
 import { Router } from '@angular/router';
 import { DialogService } from '../shared/services/dialog.service';
+import { AuthService } from '../api/services/auth.service';
 
 @Component({
   selector: 'app-scaffold',
@@ -13,14 +14,17 @@ import { DialogService } from '../shared/services/dialog.service';
 export class ScaffoldComponent implements OnInit {
   categories$: Observable<CategoryResource[]> | null = null;
   drawerOpened = false;
+  isAuthenticated = false;
 
   constructor(
     private readonly categoryService: CategoryService,
     private readonly dialogService: DialogService,
+    private readonly authService: AuthService,
     private readonly router: Router,
   ) {}
 
   ngOnInit() {
+    this.isAuthenticated = this.authService.isAuthenticated();
     this.getCategories();
   }
 

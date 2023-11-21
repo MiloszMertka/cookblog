@@ -9,16 +9,33 @@
           <a [routerLink]="['categories', category.id]" class="link">
             {{ category.name }}</a
           >
-          <button
-            (click)="handleDeleteCategoryClicked(category)"
-            color="warn"
-            mat-icon-button
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
+          <div *ngIf="isAuthenticated">
+            <a
+              [routerLink]="['categories', 'edit', category.id]"
+              mat-icon-button
+            >
+              <mat-icon>edit</mat-icon>
+            </a>
+            <button
+              (click)="handleDeleteCategoryClicked(category)"
+              color="warn"
+              mat-icon-button
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
         </div>
       </mat-list-item>
     </mat-list>
+    <div class="button-container">
+      <a
+        class="button"
+        color="primary"
+        mat-raised-button
+        routerLink="categories/create"
+        >Create category</a
+      >
+    </div>
   </mat-drawer>
   <div class="content">
     <ng-content></ng-content>

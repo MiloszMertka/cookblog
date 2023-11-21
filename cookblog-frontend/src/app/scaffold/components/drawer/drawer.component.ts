@@ -19,6 +19,7 @@ export class DrawerComponent {
     CategoryResource[]
   > | null;
   @Input({ required: true }) opened!: boolean;
+  @Input({ required: true }) isAuthenticated!: boolean;
   @Output() deleteCategoryClick = new EventEmitter<CategoryResource>();
 
   handleDeleteCategoryClicked(category: CategoryResource) {
