@@ -1,0 +1,16 @@
+<h2>Comments:</h2>
+<ul class="comments">
+  <li *ngFor="let comment of comments" class="comment">
+    <button (click)="handleCommentDelete(comment)" color="warn" mat-icon-button>
+      <mat-icon>delete</mat-icon>
+    </button>
+    <div>
+      <span class="author">{{ comment.author }}</span>
+      <p>{{ comment.content }}</p>
+    </div>
+  </li>
+</ul>
+<app-comment-form
+  (commentSubmit)="handleCommentSubmit()"
+  [commentForm]="commentForm"
+></app-comment-form>

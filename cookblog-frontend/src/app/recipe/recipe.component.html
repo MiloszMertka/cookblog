@@ -1,5 +1,10 @@
 <article *ngIf="recipe$ | async as recipe" class="article">
   <h1 class="title">{{ recipe.title }}</h1>
+  <img
+    [src]="recipe.image.path"
+    alt="Photo of food"
+    class="image mat-elevation-z2"
+  />
   <ul class="info">
     <li *ngIf="recipe.preparationTimeInMinutes">
       Preparation time:
@@ -30,29 +35,10 @@
   </ul>
   <h2>Instructions:</h2>
   <p>{{ recipe.instructions }}</p>
-  <h2>Comments:</h2>
-  <ul class="comments">
-    <li *ngFor="let comment of recipe.comments" class="comment">
-      <span class="author">{{ comment.author }}</span>
-      <p>{{ comment.content }}</p>
-    </li>
-  </ul>
-  <h2>Your comment:</h2>
-  <form
-    (submit)="handleCommentSubmit($event)"
-    [formGroup]="commentForm"
-    class="comment-form"
-  >
-    <mat-form-field appearance="outline">
-      <mat-label>Author</mat-label>
-      <input formControlName="author" matInput type="text" />
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Content</mat-label>
-      <textarea formControlName="content" matInput rows="3"></textarea>
-    </mat-form-field>
-    <button class="button" color="primary" mat-raised-button type="submit">
-      Add comment
-    </button>
-  </form>
+  <app-comments
+    (commentDelete)="handleCommentDelete($event)"
+    (commentSubmit)="handleCommentSubmit()"
+    [commentForm]="commentForm"
+    [comments]="recipe.comments"
+  ></app-comments>
 </article>

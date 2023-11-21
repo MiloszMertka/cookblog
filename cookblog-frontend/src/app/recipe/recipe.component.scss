@@ -14,6 +14,12 @@
   padding: 0;
 }
 
+.image {
+  display: block;
+  max-width: 50%;
+  border-radius: 5px;
+}
+
 .ingredients {
   list-style-type: none;
   padding: 0;
@@ -30,24 +36,4 @@
 
 .unit {
   text-transform: lowercase;
-}
-
-.comments {
-  list-style-type: none;
-  padding: 0;
-}
-
-.author {
-  opacity: 0.5;
-  font-weight: bold;
-}
-
-.comment-form {
-  display: flex;
-  flex-direction: column;
-}
-
-.button {
-  align-self: flex-start;
-  text-transform: uppercase;
 }

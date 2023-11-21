@@ -1,0 +1,13 @@
+.comments {
+  list-style-type: none;
+  padding: 0;
+}
+
+.comment {
+  display: flex;
+}
+
+.author {
+  opacity: 0.5;
+  font-weight: bold;
+}
