@@ -11,6 +11,7 @@ import { ScaffoldModule } from './scaffold/scaffold.module';
 import { RecipeModule } from './recipe/recipe.module';
 import { ErrorHandlerInterceptor } from './api/interceptors/error-handler.interceptor';
 import { RecipeFormModule } from './recipe-form/recipe-form.module';
+import { CategoryFormModule } from './category-form/category-form.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -24,6 +25,7 @@ import { RecipeFormModule } from './recipe-form/recipe-form.module';
     RecipesModule,
     RecipeModule,
     RecipeFormModule,
+    CategoryFormModule,
   ],
   providers: [
     {

@@ -5,6 +5,7 @@ import { map, Observable, switchMap, tap } from 'rxjs';
 import { RecipeResource } from '../api/resources/recipe.resource';
 import { FormControl, FormGroup } from '@angular/forms';
 import { CommentRecipeRequest } from '../api/requests/comment-recipe.request';
+import { CommentResource } from '../api/resources/comment.resource';
 
 @Component({
   selector: 'app-recipe',
@@ -31,10 +32,13 @@ export class RecipeComponent implements OnInit {
     this.getRecipe();
   }
 
-  handleCommentSubmit(event: SubmitEvent) {
-    event.preventDefault();
+  handleCommentSubmit() {
     const { author, content } = this.commentForm.value;
     this.commentRecipe(author!, content!);
+  }
+
+  handleCommentDelete(comment: CommentResource) {
+    this.deleteComment(comment.id);
   }
 
   private getRecipe() {
@@ -51,6 +55,14 @@ export class RecipeComponent implements OnInit {
       .commentRecipe(this.recipeId!, commentRecipeRequest)
       .subscribe(() => {
         this.commentForm.reset();
+        this.getRecipe();
+      });
+  }
+
+  private deleteComment(commentId: number) {
+    this.recipeService
+      .deleteComment(this.recipeId!, commentId)
+      .subscribe(() => {
         this.getRecipe();
       });
   }

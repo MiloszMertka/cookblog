@@ -4,10 +4,10 @@
       <mat-card-title>{{ recipe.title }}</mat-card-title>
     </mat-card-header>
     <img
-      alt="Photo of a Shiba Inu"
+      [src]="recipe.image.path"
+      alt="Photo of food"
       class="image"
       mat-card-image
-      src="https://material.angular.io/assets/img/examples/shiba2.jpg"
     />
     <mat-card-content class="content">
       <p>

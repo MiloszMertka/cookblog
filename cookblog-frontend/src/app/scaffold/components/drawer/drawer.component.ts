@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
 import { CategoryResource } from '../../../api/resources/category.resource';
 import { Observable } from 'rxjs';
 
@@ -13,4 +19,10 @@ export class DrawerComponent {
     CategoryResource[]
   > | null;
   @Input({ required: true }) opened!: boolean;
+  @Input({ required: true }) isAuthenticated!: boolean;
+  @Output() deleteCategoryClick = new EventEmitter<CategoryResource>();
+
+  handleDeleteCategoryClicked(category: CategoryResource) {
+    this.deleteCategoryClick.emit(category);
+  }
 }

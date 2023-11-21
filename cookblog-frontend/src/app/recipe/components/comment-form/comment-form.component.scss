@@ -1,0 +1,9 @@
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.button {
+  align-self: flex-start;
+  text-transform: uppercase;
+}

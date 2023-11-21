@@ -7,6 +7,27 @@
   min-width: 300px;
 }
 
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.link {
+  text-decoration: none;
+  color: black;
+}
+
 .content {
   margin-top: 64px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.button {
+  text-transform: uppercase;
 }

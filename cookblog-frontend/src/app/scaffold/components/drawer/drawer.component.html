@@ -1,14 +1,41 @@
 <mat-drawer-container class="container">
   <mat-drawer [opened]="opened" class="drawer" mode="side">
-    <mat-nav-list>
-      <a mat-list-item routerLink="">All recipies</a>
+    <mat-list>
+      <mat-list-item>
+        <a class="link" routerLink="">All recipies</a>
+      </mat-list-item>
+      <mat-list-item *ngFor="let category of categories$ | async">
+        <div class="item">
+          <a [routerLink]="['categories', category.id]" class="link">
+            {{ category.name }}</a
+          >
+          <div *ngIf="isAuthenticated">
+            <a
+              [routerLink]="['categories', 'edit', category.id]"
+              mat-icon-button
+            >
+              <mat-icon>edit</mat-icon>
+            </a>
+            <button
+              (click)="handleDeleteCategoryClicked(category)"
+              color="warn"
+              mat-icon-button
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+      </mat-list-item>
+    </mat-list>
+    <div class="button-container">
       <a
-        *ngFor="let category of categories$ | async"
-        [routerLink]="['categories', category.id]"
-        mat-list-item
-        >{{ category.name }}</a
+        class="button"
+        color="primary"
+        mat-raised-button
+        routerLink="categories/create"
+        >Create category</a
       >
-    </mat-nav-list>
+    </div>
   </mat-drawer>
   <div class="content">
     <ng-content></ng-content>

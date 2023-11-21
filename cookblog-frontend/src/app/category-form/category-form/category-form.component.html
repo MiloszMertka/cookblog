@@ -1,0 +1,14 @@
+<div class="container">
+  <h1 class="heading">
+    {{ categoryId ? "Edit Category" : "Create Category" }}
+  </h1>
+  <form (submit)="handleSubmit($event)" class="form">
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input [formControl]="categoryForm.controls.name" matInput type="text" />
+    </mat-form-field>
+    <button class="fab" color="primary" mat-fab>
+      <mat-icon>save</mat-icon>
+    </button>
+  </form>
+</div>
