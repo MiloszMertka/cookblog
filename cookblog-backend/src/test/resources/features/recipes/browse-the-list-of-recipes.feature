@@ -3,6 +3,6 @@ Feature: Browse the list of recipes
   So that I can discover and view different recipes on the blog
 
   Scenario: View a list of recipes
-    Given there are existing recipes in the blog
+    Given there are existing recipes in the blog with title "browseRecipes"
     When I navigate to the list of recipes
     Then I should see a list of available recipes

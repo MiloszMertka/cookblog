@@ -3,6 +3,7 @@ Feature: Update a recipe
   So that I could correct it
 
   Scenario: Update a recipe
-    Given I prepared update data
+    Given there are existing recipes in the blog with title "updateRecipe"
+    And I prepared update data
     When I update a recipe
     Then Recipe should be updated

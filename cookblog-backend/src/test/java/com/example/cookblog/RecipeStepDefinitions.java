@@ -9,6 +9,8 @@ import com.example.cookblog.dto.resources.QuantityResource;
 import com.example.cookblog.model.*;
 import com.example.cookblog.repository.CategoryRepository;
 import com.example.cookblog.repository.RecipeRepository;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -45,18 +47,28 @@ public class RecipeStepDefinitions {
 
     private CreateRecipeRequest createRecipeRequest;
     private ResultActions resultActions;
+    private Recipe recipe;
+    private Category category;
 
+    @Before
+    public void createCategory() {
+        category = Category.builder()
+                .name("category")
+                .build();
+        categoryRepository.save(category);
+    }
 
+    @After
+    public void deleteCategory() {
+        recipeRepository.deleteAll();
+        categoryRepository.deleteAll();
+    }
     // Feature: Browse the list of recipes
 
-    @Given("there are existing recipes in the blog")
-    public void thereAreExistingRecipesInTheBlog() {
-        Category category1 = Category.builder()
-                .name("Feature: Browse the list of recipes")
-                .build();
-        categoryRepository.save(category1);
-        Recipe recipe = Recipe.builder()
-                .title("Feature: Browse the list of recipes")
+    @Given("there are existing recipes in the blog with title {string}")
+    public void thereAreExistingRecipesInTheBlog(String title) {
+        recipe = Recipe.builder()
+                .title(title)
                 .description("description")
                 .instructions("instructions")
                 .ingredients(Set.of(Ingredient.builder()
@@ -69,14 +81,14 @@ public class RecipeStepDefinitions {
                 .image(Image.builder()
                         .path("image-path")
                         .build())
-                .category(category1)
+                .category(category)
                 .build();
         recipeRepository.save(recipe);
     }
 
     @When("I navigate to the list of recipes")
     public void iNavigateToTheListOfRecipes() throws Exception {
-        resultActions = mockMvc.perform(get("/recipes/search/{query}", "Feature: Browse the list of recipes"));
+        resultActions = mockMvc.perform(get("/recipes/search/{query}", recipe.getTitle()));
     }
 
     @Then("I should see a list of available recipes")
@@ -84,8 +96,7 @@ public class RecipeStepDefinitions {
         resultActions.andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("$").isArray(),
-                        jsonPath("$[0].id").value(1L), // Replace 1L with the expected ID
-                        jsonPath("$[0].title").value("Feature: Browse the list of recipes"),
+                        jsonPath("$[0].title").value(recipe.getTitle()),
                         jsonPath("$[0].description").value("description"),
                         jsonPath("$[0].instructions").value("instructions")
                 );
@@ -138,7 +149,8 @@ public class RecipeStepDefinitions {
 
     @When("I get a recipe")
     public void iGetARecipe() throws Exception {
-        resultActions = mockMvc.perform(get("/recipes/{id}", 2L));
+        resultActions = mockMvc.perform(get("/recipes/{id}",
+                recipeRepository.findByTitle("Feature: Create new recipe").getId()));
     }
 
     @Then("I should see created recipe")
@@ -195,7 +207,7 @@ public class RecipeStepDefinitions {
 
     @Then("I should receive the details of the requested recipe")
     public void iShouldReceiveTheDetailsOfTheRequestedRecipe() throws Exception {
-        
+
     }
     // Feature: Update a recipe
 
@@ -222,7 +234,7 @@ public class RecipeStepDefinitions {
                 .calorificValue(1)
                 .category(CategoryResource.builder()
                         .id(null)
-                        .name("Feature: Create new recipe")
+                        .name("category")
                         .recipes(null)
                         .build())
                 .build();
@@ -231,7 +243,7 @@ public class RecipeStepDefinitions {
     @When("I update a recipe")
     public void iUpdateARecipe() throws Exception {
         final var content = objectMapper.writeValueAsString(updateRecipeRequest);
-        resultActions = mockMvc.perform(put("/recipes/{id}", 2L)
+        resultActions = mockMvc.perform(put("/recipes/{id}", recipe.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content));
     }
