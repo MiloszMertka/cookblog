@@ -4,6 +4,5 @@ Feature: Delete a recipe
 
   Scenario: Delete a recipe
     Given there are existing recipes in the blog with title "deleteTest"
-    When I navigate to the list of recipes
-    And I delete the recipe
+    When I delete the recipe
     Then the recipe should no longer exist

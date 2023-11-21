@@ -11,7 +11,6 @@ import com.example.cookblog.repository.CategoryRepository;
 import com.example.cookblog.repository.RecipeRepository;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -117,10 +116,6 @@ public class RecipeStepDefinitions {
     // Feature: Create new recipe
     @Given("I prepared recipe data")
     public void iPreparedRecipeData() {
-        Category category = Category.builder()
-                .name("Feature: Create new recipe")
-                .build();
-        categoryRepository.save(category);
         createRecipeRequest = CreateRecipeRequest.builder()
                 .title("Feature: Create new recipe")
                 .description("description")
@@ -195,15 +190,15 @@ public class RecipeStepDefinitions {
 
 
     // Feature: Delete a recipe
-    @And("I delete the recipe")
+    @When("I delete the recipe")
     public void iDeleteTheRecipeWithTitle() throws Exception {
-        resultActions = mockMvc.perform(delete("/recipes/{id}", 1L))
+        resultActions = mockMvc.perform(delete("/recipes/{id}", recipe.getId()))
                 .andExpect(status().isNoContent());
     }
 
     @Then("the recipe should no longer exist")
     public void theRecipeShouldNoLongerExist() throws Exception {
-        mockMvc.perform(get("/recipes/{id}", 1L))
+        mockMvc.perform(get("/recipes/{id}", recipe.getId()))
                 .andExpect(status().isNotFound());
     }
 
