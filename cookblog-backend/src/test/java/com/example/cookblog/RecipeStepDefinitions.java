@@ -45,10 +45,10 @@ public class RecipeStepDefinitions {
     @Autowired
     private RecipeRepository recipeRepository;
 
-    private CreateRecipeRequest createRecipeRequest;
-    private ResultActions resultActions;
     private Recipe recipe;
     private Category category;
+    private CreateRecipeRequest createRecipeRequest;
+    private ResultActions resultActions;
 
     @Before
     public void createCategory() {
@@ -63,6 +63,7 @@ public class RecipeStepDefinitions {
         recipeRepository.deleteAll();
         categoryRepository.deleteAll();
     }
+
     // Feature: Browse the list of recipes
 
     @Given("there are existing recipes in the blog with title {string}")
@@ -94,11 +95,22 @@ public class RecipeStepDefinitions {
     @Then("I should see a list of available recipes")
     public void iShouldSeeAListOfAvailableRecipes() throws Exception {
         resultActions.andExpect(status().isOk())
-                .andExpectAll(
-                        jsonPath("$").isArray(),
-                        jsonPath("$[0].title").value(recipe.getTitle()),
-                        jsonPath("$[0].description").value("description"),
-                        jsonPath("$[0].instructions").value("instructions")
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$[0].title").value(recipe.getTitle()))
+                .andExpect(jsonPath("$[0].description").value(recipe.getDescription()))
+                .andExpect(jsonPath("$[0].instructions").value(recipe.getInstructions()))
+                .andExpect(jsonPath("$[0].ingredients[0].name")
+                        .value(recipe.getIngredients().iterator().next().getName()))
+                .andExpect(jsonPath("$[0].ingredients[0].quantity.amount")
+                        .value(recipe.getIngredients().iterator().next().getQuantity().getAmount()))
+                .andExpect(jsonPath("$[0].ingredients[0].quantity.unit")
+                        .value(recipe.getIngredients().iterator().next().getQuantity().getUnit().toString()))
+                .andExpect(jsonPath("$[0].image.path").value(recipe.getImage().getPath()))
+                .andExpect(jsonPath("$[0].preparationTimeInMinutes")
+                        .value(recipe.getPreparationTimeInMinutes()))
+                .andExpect(jsonPath("$[0].portions").value(recipe.getPortions()))
+                .andExpect(jsonPath("$[0].calorificValue").value(recipe.getCalorificValue()))
+                .andExpect(jsonPath("$[0].comments").isArray()
                 );
     }
 
