@@ -158,7 +158,7 @@ public class RecipeStepDefinitions {
     @When("I get a recipe")
     public void iGetARecipe() throws Exception {
         resultActions = mockMvc.perform(get("/recipes/{id}",
-                recipeRepository.findByTitle(createRecipeRequest.title()).getId()));
+                recipeRepository.findByTitle(createRecipeRequest.title()).orElseThrow().getId()));
     }
 
     @Then("I should see created recipe")
@@ -207,7 +207,7 @@ public class RecipeStepDefinitions {
     @When("I request to get the recipe by its ID {string}")
     public void iRequestToGetTheRecipeByItsID(String title) throws Exception {
         resultActions = mockMvc.perform(get("/recipes/{id}",
-                recipeRepository.findByTitle(title).getId()));
+                recipeRepository.findByTitle(title).orElseThrow().getId()));
     }
 
     @Then("I should receive the details of the requested recipe")
