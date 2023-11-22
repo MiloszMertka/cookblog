@@ -1,7 +1,12 @@
 <h2>Comments:</h2>
 <ul class="comments">
   <li *ngFor="let comment of comments" class="comment">
-    <button (click)="handleCommentDelete(comment)" color="warn" mat-icon-button>
+    <button
+      (click)="handleCommentDelete(comment)"
+      aria-label="delete comment"
+      color="warn"
+      mat-icon-button
+    >
       <mat-icon>delete</mat-icon>
     </button>
     <div>

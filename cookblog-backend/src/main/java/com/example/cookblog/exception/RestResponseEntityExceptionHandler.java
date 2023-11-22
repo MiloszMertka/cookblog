@@ -4,8 +4,6 @@ import jakarta.validation.ValidationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,16 +31,6 @@ class RestResponseEntityExceptionHandler {
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<Map<String, List<String>>> handleNoSuchElementException(NoSuchElementException exception) {
         return createResponse(exception.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<Map<String, List<String>>> handleBadCredentialsException(BadCredentialsException exception) {
-        return createResponse(exception.getMessage(), HttpStatus.UNAUTHORIZED);
-    }
-
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<Map<String, List<String>>> handleAccessDeniedException(AccessDeniedException exception) {
-        return createResponse(exception.getMessage(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
