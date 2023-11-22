@@ -14,6 +14,8 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.cucumber.junit.Cucumber;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -271,5 +273,22 @@ public class RecipeStepDefinitions {
         resultActions.andExpect(status().isNoContent());
     }
 
+    // Feature: Search the recipe
+    @When("I Search for recipe")
+    public void iSearchForRecipe() throws Exception {
+        resultActions = mockMvc.perform(put("/search/{query}", recipe.getTitle()));
+        recipe = recipeRepository.findByTitle(recipe.getTitle());
+        // TODO
+    }
 
+    @Then("I should see requested recipe")
+    public void iShouldSeeRequestedRecipe() throws Exception {
+        resultActions.andExpect(status().isOk());
+        // TODO
+    }
+
+    @Then("I should see photo for the dish")
+    public void iShouldSeePhotoForTheDish() throws Exception {
+        // TODO
+    }
 }

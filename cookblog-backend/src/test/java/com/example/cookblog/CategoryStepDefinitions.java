@@ -66,4 +66,19 @@ public class CategoryStepDefinitions {
                 .andExpect(jsonPath("$[0].name").value(category.getName()));
     }
 
+    // Feature: Request category for specific recipe
+    @Given("There are existing recipe with category")
+    public void thereAreExistingRecipeWithCategory() throws Exception {
+        // TODO
+    }
+
+    @When("I request a category")
+    public void iRequestACategory() throws Exception {
+        // TODO
+    }
+
+    @Then("I should see recipes only within that category")
+    public void iShouldSeeRecipesOnlyWithinThatCategory() throws Exception {
+        // TODO
+    }
 }
