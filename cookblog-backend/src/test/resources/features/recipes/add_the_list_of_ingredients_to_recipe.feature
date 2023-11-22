@@ -1,5 +1,5 @@
 Feature: Add the list of ingredients to recipe
-  As a user, I want to add a list of ingredients to a recipe
+  As a blog owner, I want to add a list of ingredients to a recipe
   so that I have an up-to-date collection of recipes
 
   Scenario: Add the list of ingredients to recipe
