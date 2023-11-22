@@ -11,6 +11,7 @@ import com.example.cookblog.repository.CategoryRepository;
 import com.example.cookblog.repository.RecipeRepository;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -23,8 +24,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.Objects;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -271,5 +274,44 @@ public class RecipeStepDefinitions {
         resultActions.andExpect(status().isNoContent());
     }
 
+    // Feature: Add the list of ingredients to recipe
 
+    @And("I prepared list of ingredients data")
+    public void iPreparedListOfIngredientsData() {
+        updateRecipeRequest = UpdateRecipeRequest.builder()
+                .title("recipe")
+                .description("description")
+                .ingredients(Set.of(IngredientResource.builder()
+                        .name("newIngredient")
+                        .quantity(QuantityResource.builder()
+                                .amount(1)
+                                .unit(Unit.GRAM)
+                                .build()
+                        ).build()))
+                .instructions("instructions")
+                .image(ImageResource.builder()
+                        .path("image-path")
+                        .build())
+                .category(CategoryResource.builder()
+                        .id(null)
+                        .name(category.getName())
+                        .recipes(null)
+                        .build())
+                .build();
+    }
+
+    @When("I updated recipe with the new list of ingredients")
+    public void iUpdatedRecipeWithTheListOfIngredients() throws Exception {
+        final var content = objectMapper.writeValueAsString(updateRecipeRequest);
+        resultActions = mockMvc.perform(put("/recipes/{id}", recipe.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content));
+        recipe = recipeRepository.findById(recipe.getId()).orElse(null);
+    }
+
+    @Then("I should see the recipe with the new list of ingredients")
+    public void iShouldSeeTheRecipeWithTheNewListOfIngredients() throws Exception {
+        resultActions.andExpect(status().isNoContent());
+        assertEquals(Objects.requireNonNull(recipe.getIngredients().stream().findFirst().orElse(null)).getName(),"newIngredient");
+    }
 }
