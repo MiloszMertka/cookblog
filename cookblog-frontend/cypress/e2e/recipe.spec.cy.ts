@@ -17,6 +17,19 @@ describe('Recipe Tests', () => {
     });
   });
 
+  const clickNextUntilDisabled = () => {
+    cy.get('mat-icon[aria-hidden="true"][data-mat-icon-type="font"]')
+      .contains('navigate_next')
+      .then((nextButton) => {
+        const isDisabled = nextButton.closest('button').prop('disabled');
+        if (!isDisabled) {
+          cy.wrap(nextButton).click({ force: true });
+          cy.wait(1000);
+          clickNextUntilDisabled();
+        }
+      });
+  };
+
   it('Should create new recipe', () => {
     // Dodanie nowego przepisu
     cy.fixture('recipe').then((recipe) => {
@@ -50,25 +63,43 @@ describe('Recipe Tests', () => {
       cy.visit('/');
       cy.wait(1000);
 
-      // Loop until the "Next" button is disabled
-      // Recursive function to click "Next" until it's disabled
-      const clickNextUntilDisabled = () => {
-        cy.get('mat-icon[aria-hidden="true"][data-mat-icon-type="font"]')
-          .contains('navigate_next')
-          .then((nextButton) => {
-            const isDisabled = nextButton.closest('button').prop('disabled');
-            if (!isDisabled) {
-              cy.wrap(nextButton).click({ force: true });
-              cy.wait(1000); // Add a wait if needed
-              clickNextUntilDisabled(); // Recursive call
-            }
-          });
-      };
-
       clickNextUntilDisabled();
 
       cy.contains(recipe.title).should('exist');
       cy.contains(recipe.description).should('exist');
     });
+  });
+
+  it('Should browse recipes', () => {
+    cy.visit('/');
+  });
+
+  it('Should delete recipe ', () => {
+    cy.fixture('recipe').then((recipe) => {
+      cy.visit('/');
+      clickNextUntilDisabled();
+      cy.contains('.card', recipe.title).within(() => {
+        cy.get('.button[color="warn"]').click();
+      });
+
+      cy.get('[data-test-id="confirm-button"]').click();
+
+      cy.wait(1000);
+      cy.visit('/');
+      clickNextUntilDisabled();
+      cy.contains('.card', recipe.title).should('not.exist');
+    });
+  });
+
+  it('There should be recipes', () => {
+    cy.visit('/');
+  });
+
+  it('Should edit recipe', () => {
+    cy.visit('/');
+  });
+
+  it('Should read recipe', () => {
+    cy.visit('/');
   });
 });
