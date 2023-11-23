@@ -70,6 +70,21 @@ describe('Recipe Tests', () => {
     });
   });
 
+  it('Should read recipe', () => {
+    cy.fixture('recipe').then((recipe) => {
+      cy.visit('/');
+      clickNextUntilDisabled();
+      cy.get('.button').contains('Read').click({ force: true });
+      cy.wait(1000);
+      cy.contains(recipe.title).should('exist');
+      cy.contains(recipe.description).should('exist');
+      cy.contains(recipe.instructions).should('exist');
+      cy.contains(recipe.preparationTimeInMinutes).should('exist');
+      cy.contains(recipe.calorificValue).should('exist');
+      cy.contains(recipe.portions).should('exist');
+    });
+  });
+
   it('Should browse recipes', () => {
     cy.visit('/');
   });
@@ -96,10 +111,6 @@ describe('Recipe Tests', () => {
   });
 
   it('Should edit recipe', () => {
-    cy.visit('/');
-  });
-
-  it('Should read recipe', () => {
     cy.visit('/');
   });
 });
