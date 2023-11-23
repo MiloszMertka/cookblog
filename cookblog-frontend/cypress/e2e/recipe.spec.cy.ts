@@ -87,6 +87,28 @@ describe('Recipe Tests', () => {
 
   it('Should browse recipes', () => {
     cy.visit('/');
+    cy.contains('Dolores porro et maiores deserunt sit consequatur.').should(
+      'exist',
+    );
+    cy.contains(
+      'Explicabo non et nam amet. Vitae laboriosam ipsa itaque. Et molestiae voluptatibus minima sint.',
+    ).should('exist');
+    cy.get('mat-icon[aria-hidden="true"][data-mat-icon-type="font"]')
+      .contains('navigate_next')
+      .click({ force: true });
+    cy.contains(
+      'Rerum porro tempora voluptas ipsum et facilis quibusdam.',
+    ).should('exist');
+    cy.contains(
+      'Omnis error aperiam. Veritatis id ullam sit numquam qui et nulla. Odio maxime adipisci velit. Vitae ut corrupti est provident. Aliquid non temporibus nihil dolores.',
+    ).should('exist');
+    cy.get('mat-icon[aria-hidden="true"][data-mat-icon-type="font"]')
+      .contains('navigate_next')
+      .click({ force: true });
+    cy.contains('Deleniti eligendi reiciendis ut vel.').should('exist');
+    cy.contains(
+      'Quisquam laboriosam omnis mollitia dolorem in. Atque atque ipsam recusandae. Laudantium quo minus. Tempora omnis qui molestiae dolores ea ea sunt. Vero optio id odio.',
+    ).should('exist');
   });
 
   it('Should edit recipe', () => {
