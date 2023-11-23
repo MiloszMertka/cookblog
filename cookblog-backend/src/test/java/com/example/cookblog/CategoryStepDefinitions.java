@@ -1,9 +1,10 @@
 package com.example.cookblog;
 
-import com.example.cookblog.model.Category;
+import com.example.cookblog.model.*;
 import com.example.cookblog.repository.CategoryRepository;
 import com.example.cookblog.repository.RecipeRepository;
 import io.cucumber.java.After;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -16,6 +17,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.Set;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -39,11 +42,19 @@ public class CategoryStepDefinitions {
     @Autowired
     private RecipeRepository recipeRepository;
 
+    private Long recipeId;
+    private Recipe recipe;
     private Category category;
     private ResultActions resultActions;
 
+    @Before
+    public void setUp(){
+        recipeRepository.deleteAll();
+        categoryRepository.deleteAll();
+    }
+
     @After
-    public void deleteCategory() {
+    public void cleanUp() {
         recipeRepository.deleteAll();
         categoryRepository.deleteAll();
     }
@@ -81,18 +92,44 @@ public class CategoryStepDefinitions {
     }
 
     // Feature: Request category for specific recipe
-    @Given("There are existing recipe with category")
+    @Given("The recipe with category exist")
     public void thereAreExistingRecipeWithCategory() throws Exception {
-        // TODO
+        setUp();
+        category = Category.builder()
+            .name("category")
+            .build();
+
+        recipe = Recipe.builder()
+            .title("title")
+            .description("description")
+            .instructions("instructions")
+            .ingredients(Set.of(Ingredient.builder()
+                .name("ingredient")
+                .quantity(Quantity.builder()
+                    .amount(1)
+                    .unit(Unit.GRAM)
+                    .build())
+                .build()))
+            .image(Image.builder()
+                .path("image-path")
+                .build())
+            .category(category)
+            .build();
+
+        categoryRepository.save(category);
+        recipeRepository.save(recipe);
     }
 
-    @When("I request a category")
+    @When("I request a category of that recipe")
     public void iRequestACategory() throws Exception {
-        // TODO
+        recipeId = recipeRepository.findByTitle(recipe.getTitle()).getId();
+        resultActions = mockMvc.perform(get("/recipes/{id}/category", recipeId));
     }
 
-    @Then("I should see recipes only within that category")
+    @Then("I should get category of that recipe")
     public void iShouldSeeRecipesOnlyWithinThatCategory() throws Exception {
-        // TODO
+        resultActions.andExpect(status().isOk())
+            .andExpect(jsonPath("$.name")
+                .value(recipe.getCategory().getName()));
     }
 }

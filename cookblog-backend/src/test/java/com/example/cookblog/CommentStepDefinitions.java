@@ -1,12 +1,12 @@
 package com.example.cookblog;
 
 import com.example.cookblog.dto.requests.CommentRecipeRequest;
-import com.example.cookblog.mapper.CommentMapper;
 import com.example.cookblog.model.*;
 import com.example.cookblog.repository.CategoryRepository;
 import com.example.cookblog.repository.RecipeRepository;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -22,9 +22,10 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 
-
+import java.util.Objects;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -37,9 +38,6 @@ public class CommentStepDefinitions {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
-    private CommentMapper commentMapper;
-
-    @Autowired
     private MockMvc mockMvc;
 
     @Autowired
@@ -48,6 +46,8 @@ public class CommentStepDefinitions {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    private Long recipeId;
+    private Long commentId;
     private Recipe recipe;
     private Comment comment;
     private Category category;
@@ -57,11 +57,11 @@ public class CommentStepDefinitions {
     private ResultActions resultActions;
 
     @Before
-    public void createRecipeAndCategory() {
+    public void setUp() {
+        cleanUp();
         category = Category.builder()
                 .name("category")
                 .build();
-        categoryRepository.deleteAll();
         categoryRepository.save(category);
 
         recipe = Recipe.builder()
@@ -80,13 +80,6 @@ public class CommentStepDefinitions {
                         .build())
                 .category(category)
                 .build();
-        comment = Comment.builder()
-                .author("author")
-                .content("content")
-                .build();
-
-        recipeRepository.deleteAll();
-        recipeRepository.save(recipe);
     }
 
     @After
@@ -98,17 +91,23 @@ public class CommentStepDefinitions {
     // Feature: Create new comment
     @Given("I wrote a comment")
     public void iWroteAComment() throws Exception {
-        commentRecipeRequest = CommentRecipeRequest.builder()
-                .author(comment.getAuthor())
-                .content(comment.getContent())
+        setUp();
+        comment = Comment.builder()
+                .author("author")
+                .content("content")
                 .build();
+    }
+
+    @And("There is a recipe to comment on")
+    public void thereIsARecipeToCommentOn() throws Exception {
+        recipeRepository.save(recipe);
+        recipeId = recipeRepository.findByTitle(recipe.getTitle()).getId();
     }
 
     @When("I post a comment")
     public void iPostAComment() throws Exception {
-        final var content = objectMapper.writeValueAsString(commentRecipeRequest);
-        resultActions = mockMvc.perform(post("/{id}/comment",
-                    recipeRepository.findByTitle(recipe.getTitle()).getId())
+        final var content = objectMapper.writeValueAsString(comment);
+        resultActions = mockMvc.perform(post("/recipes/{id}/comment", recipeId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content));
     }
@@ -119,25 +118,36 @@ public class CommentStepDefinitions {
     }
 
     // Feature: Delete my comment
-    @Given("There is my comment")
+    @Given("There is a commented recipe")
     public void thereIsMyComment() throws Exception {
-        final var repRecipe = recipeRepository.findByTitle(recipe.getTitle());
-        repRecipe.getComments().add(comment);
-        recipeRepository.save(repRecipe);
+        setUp();
+        recipeRepository.save(recipe);
+        comment = Comment.builder()
+                .author("author")
+                .content("content")
+                .build();
+        final var response = recipeRepository.findByTitle(recipe.getTitle());
+        response.getComments().add(comment);
+        recipeRepository.save(response);
     }
 
     @When("I deleted a comment")
     public void iDeletedAComment() throws Exception {
-        resultActions = mockMvc.perform(delete("{id}/comment/{commentId}",
-                recipeRepository.findByTitle(recipe.getTitle()).getId()));
+        recipeId = recipeRepository.findByTitle(recipe.getTitle()).getId();
+        commentId = recipeRepository.findById(recipeId).get()
+                .getComments().stream().findAny().get().getId();
+
+        resultActions = mockMvc.perform(delete("/recipes/{id}/comment/{commentId}",
+                recipeId, commentId));
+
     }
 
     @Then("I should not be able to see it anymore")
     public void iShouldNotBeAbleToSeeItAnymore() throws Exception {
-        resultActions = mockMvc.perform(get("/{id}",
-                recipeRepository.findByTitle(
-                        recipe.getTitle())
-                        .getId()));
-        resultActions.andExpect(status().isNotFound());
+        resultActions.andExpect(status().isNoContent());
+        final var commentExists = recipeRepository.findById(recipeId).get()
+                .getComments().stream()
+                .anyMatch(com -> Objects.equals(com.getId(), commentId));
+        assertFalse(commentExists);
     }
 }

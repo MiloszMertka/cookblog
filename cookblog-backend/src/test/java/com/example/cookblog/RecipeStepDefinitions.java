@@ -11,8 +11,8 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.cucumber.junit.Cucumber;
-import org.junit.runner.RunWith;
+
+import static org.junit.Assert.assertTrue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.Set;
+import java.util.*;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -273,23 +273,40 @@ public class RecipeStepDefinitions {
     }
 
     // Feature: Search the recipe
-    @When("I Search for recipe")
+    @When("I search for recipe")
     public void iSearchForRecipe() throws Exception {
-        resultActions = mockMvc.perform(put("/search/{query}", recipe.getTitle()));
+        resultActions = mockMvc.perform(get("/recipes/search/{query}", recipe.getTitle()));
     }
 
     @Then("I should see requested recipe")
     public void iShouldSeeRequestedRecipe() throws Exception {
-        resultActions.andExpect(status().isOk());
-        // TODO
+        resultActions.andExpect(status().isOk())
+            .andExpectAll(jsonPath("$[?(@.id != -1)]").exists(),
+                jsonListContentChecker("title",
+                    recipe.getTitle()),
+                jsonListContentChecker("description",
+                    recipe.getDescription()),
+                jsonListContentChecker("ingredients[0].name",
+                    recipe.getIngredients().iterator().next().getName()),
+                jsonListContentChecker("ingredients[0].quantity.amount",
+                    recipe.getIngredients().iterator().next().getQuantity().getAmount()),
+                jsonListContentChecker("ingredients[0].quantity.unit",
+                    recipe.getIngredients().iterator().next().getQuantity().getUnit()),
+                jsonListContentChecker("instructions",
+                    recipe.getInstructions()),
+                jsonListContentChecker("image.path",
+                    recipe.getImage().getPath()));
     }
 
     // Feature: Add photo to recipe
     @Then("I should see photo for the dish")
     public void iShouldSeePhotoForTheDish() throws Exception {
-        String resp =  resultActions.andReturn().getResponse().getContentAsString();
         resultActions.andExpect(status().isOk())
             .andExpect(jsonPath("$.image.path")
                 .value(createRecipeRequest.image().path()));
+    }
+
+    private ResultMatcher jsonListContentChecker(String attributeName, Object expectedValue) {
+        return jsonPath("$[?(@." + attributeName + " == '" + expectedValue + "')]").exists();
     }
 }

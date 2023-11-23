@@ -4,5 +4,6 @@ Feature: Create new comment
 
 Scenario: Create new comment
   Given I wrote a comment
+  And There is a recipe to comment on
   When I post a comment
   Then I should be able to see it in comment section

@@ -4,5 +4,5 @@ Feature: Search the recipe
 
 Scenario: Search the recipe
   Given there are existing recipes in the blog with title "searchRecipes"
-  When I Search for recipe
+  When I search for recipe
   Then I should see requested recipe
