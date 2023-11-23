@@ -1,6 +1,9 @@
 package com.example.cookblog;
 
 import com.example.cookblog.model.Category;
+import com.example.cookblog.repository.CategoryRepository;
+import com.example.cookblog.repository.RecipeRepository;
+import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -30,8 +33,20 @@ public class CategoryStepDefinitions {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
+    private RecipeRepository recipeRepository;
+
     private Category category;
     private ResultActions resultActions;
+
+    @After
+    public void deleteCategory() {
+        recipeRepository.deleteAll();
+        categoryRepository.deleteAll();
+    }
 
     @Given("I prepared category data")
     public void iPreparedCategoryData() {
@@ -39,7 +54,6 @@ public class CategoryStepDefinitions {
                 .name("category")
                 .build();
     }
-
 
     @When("I create new category")
     public void iCreateNewCategory() throws Exception {

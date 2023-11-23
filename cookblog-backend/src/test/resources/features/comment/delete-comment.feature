@@ -3,7 +3,6 @@ Feature: Delete my comment
   So that I can remove misleading or not true information
 
 Scenario: Delete my comment
-  Given I wrote a comment
-  And I posted a comment
+  Given There is my comment
   When I deleted a comment
   Then I should not be able to see it anymore

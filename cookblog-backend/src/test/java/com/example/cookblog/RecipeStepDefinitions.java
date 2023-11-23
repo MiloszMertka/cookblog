@@ -57,6 +57,7 @@ public class RecipeStepDefinitions {
         category = Category.builder()
                 .name("category")
                 .build();
+        categoryRepository.deleteAll();
         categoryRepository.save(category);
     }
 
