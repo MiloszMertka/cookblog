@@ -1,17 +1,19 @@
 <mat-toolbar class="toolbar" color="primary">
-  <button (click)="handleMenuButtonClicked()" mat-icon-button>
+  <button (click)="handleMenuButtonClicked()" aria-label="menu" mat-icon-button>
     <mat-icon>menu</mat-icon>
   </button>
   <mat-form-field appearance="outline" class="search" color="accent">
     <input
       #search
       (keydown)="handleSearchInputKeyDown($event)"
+      data-test-id="search"
       matInput
       placeholder="Search"
       type="search"
     />
     <button
       (click)="handleSearchButtonClicked(search.value)"
+      aria-label="search"
       mat-icon-button
       matSuffix
     >

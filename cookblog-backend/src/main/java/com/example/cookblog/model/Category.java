@@ -24,7 +24,7 @@ public class Category {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
     @OrderBy(clause = "creationTimestamp DESC")
     @Setter(AccessLevel.NONE)
     @Builder.Default

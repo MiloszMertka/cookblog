@@ -2,17 +2,19 @@ package com.example.cookblog;
 
 import com.example.cookblog.dto.requests.CreateRecipeRequest;
 import com.example.cookblog.dto.requests.UpdateRecipeRequest;
-import com.example.cookblog.dto.resources.*;
+import com.example.cookblog.dto.resources.CategoryResource;
+import com.example.cookblog.dto.resources.ImageResource;
+import com.example.cookblog.dto.resources.IngredientResource;
+import com.example.cookblog.dto.resources.QuantityResource;
 import com.example.cookblog.model.*;
 import com.example.cookblog.repository.CategoryRepository;
 import com.example.cookblog.repository.RecipeRepository;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-
-import static org.junit.Assert.assertTrue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,11 +22,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.*;
+import java.util.Objects;
+import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -52,7 +55,6 @@ public class RecipeStepDefinitions {
 
     @Before
     public void createCategory() {
-        deleteCategory();
         category = Category.builder()
                 .name("category")
                 .build();
@@ -159,7 +161,7 @@ public class RecipeStepDefinitions {
     @When("I get a recipe")
     public void iGetARecipe() throws Exception {
         resultActions = mockMvc.perform(get("/recipes/{id}",
-                recipeRepository.findByTitle(createRecipeRequest.title()).getId()));
+                recipeRepository.findByTitle(createRecipeRequest.title()).orElseThrow().getId()));
     }
 
     @Then("I should see created recipe")
@@ -208,7 +210,7 @@ public class RecipeStepDefinitions {
     @When("I request to get the recipe by its ID {string}")
     public void iRequestToGetTheRecipeByItsID(String title) throws Exception {
         resultActions = mockMvc.perform(get("/recipes/{id}",
-                recipeRepository.findByTitle(title).getId()));
+                recipeRepository.findByTitle(title).orElseThrow().getId()));
     }
 
     @Then("I should receive the details of the requested recipe")
@@ -272,41 +274,218 @@ public class RecipeStepDefinitions {
         resultActions.andExpect(status().isNoContent());
     }
 
-    // Feature: Search the recipe
-    @When("I search for recipe")
-    public void iSearchForRecipe() throws Exception {
-        resultActions = mockMvc.perform(get("/recipes/search/{query}", recipe.getTitle()));
+    // Feature: Add the list of ingredients to recipe
+
+    @And("I prepared list of ingredients data")
+    public void iPreparedListOfIngredientsData() {
+        updateRecipeRequest = UpdateRecipeRequest.builder()
+                .title("recipe")
+                .description("description")
+                .ingredients(Set.of(IngredientResource.builder()
+                        .name("newIngredient")
+                        .quantity(QuantityResource.builder()
+                                .amount(1)
+                                .unit(Unit.GRAM)
+                                .build()
+                        ).build()))
+                .instructions("instructions")
+                .image(ImageResource.builder()
+                        .path("image-path")
+                        .build())
+                .category(CategoryResource.builder()
+                        .id(null)
+                        .name(category.getName())
+                        .recipes(null)
+                        .build())
+                .build();
     }
 
-    @Then("I should see requested recipe")
-    public void iShouldSeeRequestedRecipe() throws Exception {
+    @When("I updated recipe with the new list of ingredients")
+    public void iUpdatedRecipeWithTheListOfIngredients() throws Exception {
+        final var content = objectMapper.writeValueAsString(updateRecipeRequest);
+        resultActions = mockMvc.perform(put("/recipes/{id}", recipe.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content));
+        recipe = recipeRepository.findById(recipe.getId()).orElse(null);
+    }
+
+    @Then("I should see the recipe with the new list of ingredients")
+    public void iShouldSeeTheRecipeWithTheNewListOfIngredients() throws Exception {
+        resultActions.andExpect(status().isNoContent());
+        assertEquals(Objects.requireNonNull(recipe.getIngredients().stream().findFirst().orElse(null)).getName(), "newIngredient");
+    }
+
+    // Feature: Add information about the calorific value to a recipe
+
+    @And("I prepared update of the calorific value")
+    public void iPreparedUpdateOfTheCalorificValue() {
+        updateRecipeRequest = UpdateRecipeRequest.builder()
+                .title("recipe")
+                .description("description")
+                .ingredients(Set.of(IngredientResource.builder()
+                        .name("newIngredient")
+                        .quantity(QuantityResource.builder()
+                                .amount(1)
+                                .unit(Unit.GRAM)
+                                .build()
+                        ).build()))
+                .instructions("instructions")
+                .image(ImageResource.builder()
+                        .path("image-path")
+                        .build())
+                .category(CategoryResource.builder()
+                        .id(null)
+                        .name(category.getName())
+                        .recipes(null)
+                        .build())
+                .calorificValue(100)
+                .build();
+    }
+
+    @When("I updated recipe with the new information")
+    public void iUpdatedRecipeWithTheNewInformation() throws Exception {
+        final var content = objectMapper.writeValueAsString(updateRecipeRequest);
+        resultActions = mockMvc.perform(put("/recipes/{id}", recipe.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content));
+        recipe = recipeRepository.findById(recipe.getId()).orElse(null);
+    }
+
+    @Then("I should see the recipe with the new information about the calorific value")
+    public void iShouldSeeTheRecipeWithTheNewInformationAboutTheCalorificValue() throws Exception {
+        resultActions.andExpect(status().isNoContent());
+        assertEquals(Objects.requireNonNull(recipe.getCalorificValue()), 100);
+    }
+
+    // Feature: Add information about the preparation time to a recipe
+
+    @And("I prepared update of the preparation time")
+    public void iPreparedUpdateOfThePreparationTime() {
+        updateRecipeRequest = UpdateRecipeRequest.builder()
+                .title("recipe")
+                .description("description")
+                .ingredients(Set.of(IngredientResource.builder()
+                        .name("newIngredient")
+                        .quantity(QuantityResource.builder()
+                                .amount(1)
+                                .unit(Unit.GRAM)
+                                .build()
+                        ).build()))
+                .instructions("instructions")
+                .image(ImageResource.builder()
+                        .path("image-path")
+                        .build())
+                .category(CategoryResource.builder()
+                        .id(null)
+                        .name(category.getName())
+                        .recipes(null)
+                        .build())
+                .preparationTimeInMinutes(10)
+                .build();
+    }
+
+    @Then("I should see the recipe with the new information about the preparation time")
+    public void iShouldSeeTheRecipeWithTheNewInformationAboutThePreparationTime() throws Exception {
+        resultActions.andExpect(status().isNoContent());
+        assertEquals(Objects.requireNonNull(recipe.getPreparationTimeInMinutes()), 10);
+    }
+
+    // Feature: Add information about portions to a recipe
+
+    @And("I prepared update of portions")
+    public void iPreparedUpdateOfPortions() {
+        updateRecipeRequest = UpdateRecipeRequest.builder()
+                .title("recipe")
+                .description("description")
+                .ingredients(Set.of(IngredientResource.builder()
+                        .name("newIngredient")
+                        .quantity(QuantityResource.builder()
+                                .amount(1)
+                                .unit(Unit.GRAM)
+                                .build()
+                        ).build()))
+                .instructions("instructions")
+                .image(ImageResource.builder()
+                        .path("image-path")
+                        .build())
+                .category(CategoryResource.builder()
+                        .id(null)
+                        .name(category.getName())
+                        .recipes(null)
+                        .build())
+                .portions(4)
+                .build();
+    }
+
+    @Then("I should see the recipe with the new information about portions")
+    public void iShouldSeeTheRecipeWithTheNewInformationAboutPortions() throws Exception {
+        resultActions.andExpect(status().isNoContent());
+        assertEquals(Objects.requireNonNull(recipe.getPortions()), 4);
+    }
+
+    // Feature: Set recipe category
+
+    @And("I prepared new category")
+    public void iPreparedNewCategory() {
+        category = Category.builder()
+                .name("newCategory")
+                .build();
+        categoryRepository.save(category);
+    }
+
+    @And("I prepared update to change the category of the recipe")
+    public void iPreparedUpdateToChangeTheCategoryOfTheRecipe() {
+        updateRecipeRequest = UpdateRecipeRequest.builder()
+                .title("recipe")
+                .description("description")
+                .ingredients(Set.of(IngredientResource.builder()
+                        .name("newIngredient")
+                        .quantity(QuantityResource.builder()
+                                .amount(1)
+                                .unit(Unit.GRAM)
+                                .build()
+                        ).build()))
+                .instructions("instructions")
+                .image(ImageResource.builder()
+                        .path("image-path")
+                        .build())
+                .category(CategoryResource.builder()
+                        .id(null)
+                        .name(category.getName())
+                        .recipes(null)
+                        .build())
+                .preparationTimeInMinutes(10)
+                .build();
+    }
+
+    @Then("I should see the recipe category")
+    public void iShouldSeeTheRecipeCategory() throws Exception {
+        resultActions.andExpect(status().isNoContent());
+        assertEquals(Objects.requireNonNull(recipe.getCategory().getName()), category.getName());
+    }
+
+    // Feature: Browse recipes assigned to the category
+
+    @When("I request to get the category with its recipes by its ID")
+    public void iRequestToGetTheCategoryWithItsRecipesByItsID() throws Exception {
+        category = categoryRepository.findById(category.getId()).orElse(null);
+        assert category != null;
+        resultActions = mockMvc.perform(get("/categories/{id}", category.getId()));
+    }
+
+    @Then("I should receive the requested category with its recipes")
+    public void iShouldReceiveTheRequestedCategoryWithItsRecipes() throws Exception {
         resultActions.andExpect(status().isOk())
-            .andExpectAll(jsonPath("$[?(@.id != -1)]").exists(),
-                jsonListContentChecker("title",
-                    recipe.getTitle()),
-                jsonListContentChecker("description",
-                    recipe.getDescription()),
-                jsonListContentChecker("ingredients[0].name",
-                    recipe.getIngredients().iterator().next().getName()),
-                jsonListContentChecker("ingredients[0].quantity.amount",
-                    recipe.getIngredients().iterator().next().getQuantity().getAmount()),
-                jsonListContentChecker("ingredients[0].quantity.unit",
-                    recipe.getIngredients().iterator().next().getQuantity().getUnit()),
-                jsonListContentChecker("instructions",
-                    recipe.getInstructions()),
-                jsonListContentChecker("image.path",
-                    recipe.getImage().getPath()));
+                .andExpectAll(
+                        jsonPath("$.id").exists(),
+                        jsonPath("$.name")
+                                .value(category.getName()),
+                        jsonPath("$.recipes[0].id").exists(),
+                        jsonPath("$.recipes[0].title")
+                                .value(category.getRecipes().get(0).getTitle()),
+                        jsonPath("$.recipes[0].description")
+                                .value(category.getRecipes().get(0).getDescription())
+                );
     }
 
-    // Feature: Add photo to recipe
-    @Then("I should see photo for the dish")
-    public void iShouldSeePhotoForTheDish() throws Exception {
-        resultActions.andExpect(status().isOk())
-            .andExpect(jsonPath("$.image.path")
-                .value(createRecipeRequest.image().path()));
-    }
-
-    private ResultMatcher jsonListContentChecker(String attributeName, Object expectedValue) {
-        return jsonPath("$[?(@." + attributeName + " == '" + expectedValue + "')]").exists();
-    }
 }

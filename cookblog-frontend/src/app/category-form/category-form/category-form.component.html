@@ -5,9 +5,14 @@
   <form (submit)="handleSubmit($event)" class="form">
     <mat-form-field appearance="outline">
       <mat-label>Name</mat-label>
-      <input [formControl]="categoryForm.controls.name" matInput type="text" />
+      <input
+        [formControl]="categoryForm.controls.name"
+        data-test-id="name"
+        matInput
+        type="text"
+      />
     </mat-form-field>
-    <button class="fab" color="primary" mat-fab>
+    <button aria-label="save" class="fab" color="primary" mat-fab>
       <mat-icon>save</mat-icon>
     </button>
   </form>
