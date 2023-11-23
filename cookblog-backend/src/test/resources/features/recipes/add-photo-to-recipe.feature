@@ -5,4 +5,5 @@ Feature: Add photo to recipe
 Scenario: Add photo to recipe
   Given I prepared recipe data
   When I create new recipe
+  And I get a recipe
   Then I should see photo for the dish

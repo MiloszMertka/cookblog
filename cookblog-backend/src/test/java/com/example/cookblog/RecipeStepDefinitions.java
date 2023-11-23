@@ -2,10 +2,7 @@ package com.example.cookblog;
 
 import com.example.cookblog.dto.requests.CreateRecipeRequest;
 import com.example.cookblog.dto.requests.UpdateRecipeRequest;
-import com.example.cookblog.dto.resources.CategoryResource;
-import com.example.cookblog.dto.resources.ImageResource;
-import com.example.cookblog.dto.resources.IngredientResource;
-import com.example.cookblog.dto.resources.QuantityResource;
+import com.example.cookblog.dto.resources.*;
 import com.example.cookblog.model.*;
 import com.example.cookblog.repository.CategoryRepository;
 import com.example.cookblog.repository.RecipeRepository;
@@ -23,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Set;
@@ -54,10 +52,10 @@ public class RecipeStepDefinitions {
 
     @Before
     public void createCategory() {
+        deleteCategory();
         category = Category.builder()
                 .name("category")
                 .build();
-        categoryRepository.deleteAll();
         categoryRepository.save(category);
     }
 
@@ -278,8 +276,6 @@ public class RecipeStepDefinitions {
     @When("I Search for recipe")
     public void iSearchForRecipe() throws Exception {
         resultActions = mockMvc.perform(put("/search/{query}", recipe.getTitle()));
-        recipe = recipeRepository.findByTitle(recipe.getTitle());
-        // TODO
     }
 
     @Then("I should see requested recipe")
@@ -288,8 +284,12 @@ public class RecipeStepDefinitions {
         // TODO
     }
 
+    // Feature: Add photo to recipe
     @Then("I should see photo for the dish")
     public void iShouldSeePhotoForTheDish() throws Exception {
-        // TODO
+        String resp =  resultActions.andReturn().getResponse().getContentAsString();
+        resultActions.andExpect(status().isOk())
+            .andExpect(jsonPath("$.image.path")
+                .value(createRecipeRequest.image().path()));
     }
 }
