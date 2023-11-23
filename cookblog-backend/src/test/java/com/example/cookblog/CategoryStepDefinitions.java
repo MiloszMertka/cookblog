@@ -1,8 +1,11 @@
 package com.example.cookblog;
 
+import com.example.cookblog.dto.requests.CreateCategoryRequest;
+import com.example.cookblog.dto.requests.UpdateCategoryRequest;
+import com.example.cookblog.repository.RecipeRepository;
 import com.example.cookblog.model.*;
 import com.example.cookblog.repository.CategoryRepository;
-import com.example.cookblog.repository.RecipeRepository;
+import io.cucumber.java.en.And;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
@@ -20,6 +23,9 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Set;
 
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -35,6 +41,8 @@ public class CategoryStepDefinitions {
 
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -45,6 +53,7 @@ public class CategoryStepDefinitions {
     private Long recipeId;
     private Recipe recipe;
     private Category category;
+    private UpdateCategoryRequest updateCategoryRequest;
     private ResultActions resultActions;
 
     @Before
@@ -91,6 +100,7 @@ public class CategoryStepDefinitions {
                 .andExpect(jsonPath("$[0].name").value(category.getName()));
     }
 
+
     // Feature: Request category for specific recipe
     @Given("The recipe with category exist")
     public void thereAreExistingRecipeWithCategory() throws Exception {
@@ -131,5 +141,63 @@ public class CategoryStepDefinitions {
         resultActions.andExpect(status().isOk())
             .andExpect(jsonPath("$.name")
                 .value(recipe.getCategory().getName()));
+
+    @Given("There are existing categories in the blog with title {string}")
+    public void thereAreExistingCategoriesInTheBlogWithTitle(String name) {
+        category = Category.builder()
+                .name(name)
+                .build();
+        categoryRepository.save(category);
+    }
+
+    @And("I prepared update category data")
+    public void iPreparedUpdateCategoryData() {
+        updateCategoryRequest = UpdateCategoryRequest
+                .builder()
+                .name("Updated")
+                .build();
+    }
+
+    @When("I update category")
+    public void iUpdateCategory() throws Exception {
+        final var content = objectMapper.writeValueAsString(updateCategoryRequest);
+        resultActions = mockMvc.perform(put("/categories/{id}", category.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content));
+        category = categoryRepository.findById(category.getId()).orElse(null);
+    }
+
+
+    @Then("I should see updated category")
+    public void iShouldSeeUpdatedCategory() throws Exception {
+        resultActions.andExpect(status().isNoContent());
+        assertEquals(category.getName(), "Updated");
+    }
+
+    @When("I delete the category")
+    public void iDeleteTheCategory() throws Exception {
+        resultActions = mockMvc.perform(delete("/categories/{id}", category.getId()))
+                .andExpect(status().isNoContent());
+    }
+
+    @Then("The category should no longer exist")
+    public void theCategoryShouldNoLongerExist() throws Exception {
+        mockMvc.perform(get("/categories/{id}", category.getId()))
+                .andExpect(status().isNotFound());
+    }
+
+    @When("I request to get the category by its ID {string}")
+    public void iRequestToGetTheCategoryByItsID(String name) throws Exception {
+        resultActions = mockMvc.perform(get("/categories/{id}", category.getId()))
+                .andExpect(status().isOk());
+    }
+
+    @Then("I should receive the details of the requested category")
+    public void iShouldReceiveTheDetailsOfTheRequestedCategory() throws Exception {
+        resultActions.andExpect(status().isOk())
+                .andExpectAll(
+                        jsonPath("$.id").exists(),
+                        jsonPath("$.name")
+                                .value(category.getName()));
     }
 }

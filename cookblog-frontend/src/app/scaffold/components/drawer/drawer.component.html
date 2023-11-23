@@ -12,12 +12,14 @@
           <div *ngIf="isAuthenticated">
             <a
               [routerLink]="['categories', 'edit', category.id]"
+              aria-label="edit category"
               mat-icon-button
             >
               <mat-icon>edit</mat-icon>
             </a>
             <button
               (click)="handleDeleteCategoryClicked(category)"
+              aria-label="delete category"
               color="warn"
               mat-icon-button
             >
