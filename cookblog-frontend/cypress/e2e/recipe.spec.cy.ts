@@ -59,9 +59,7 @@ describe('Recipe Tests', () => {
         recipe.calorificValue,
         { force: true },
       );
-      cy.get('input[data-test-id="ingredient-name"]').type(
-        recipe.calorificValue,
-      );
+      cy.get('input[data-test-id="ingredient-name"]').type(recipe.ingredient);
 
       cy.get('button[aria-label="save"]').click();
       cy.visit('/');
@@ -84,6 +82,7 @@ describe('Recipe Tests', () => {
       cy.contains(recipe.title).should('exist');
       cy.contains(recipe.description).should('exist');
       cy.contains(recipe.instructions).should('exist');
+      cy.contains(recipe.ingredient).should('exist');
       cy.contains(recipe.preparationTimeInMinutes).should('exist');
       cy.contains(recipe.calorificValue).should('exist');
       cy.contains(recipe.portions).should('exist');
@@ -148,7 +147,7 @@ describe('Recipe Tests', () => {
         },
       );
       cy.get('input[data-test-id="ingredient-name"]').type(
-        recipe.calorificValue + 1,
+        recipe.ingredient + 'edited',
       );
 
       cy.get('button[aria-label="save"]').click();
@@ -157,12 +156,13 @@ describe('Recipe Tests', () => {
       clickNextUntilDisabled();
       cy.get('.button').contains('Read').click({ force: true });
       cy.wait(1000);
-      cy.contains(recipe.title).should('exist');
-      cy.contains(recipe.description).should('exist');
-      cy.contains(recipe.instructions).should('exist');
-      cy.contains(recipe.preparationTimeInMinutes).should('exist');
-      cy.contains(recipe.calorificValue).should('exist');
-      cy.contains(recipe.portions).should('exist');
+      cy.contains(recipe.title + 'edited').should('exist');
+      cy.contains(recipe.description + 'edited').should('exist');
+      cy.contains(recipe.instructions + 'edited').should('exist');
+      cy.contains(recipe.ingredient + 'edited').should('exist');
+      cy.contains(recipe.preparationTimeInMinutes + 1).should('exist');
+      cy.contains(recipe.calorificValue + 1).should('exist');
+      cy.contains(recipe.portions + 1).should('exist');
     });
   });
 

@@ -1,12 +1,11 @@
 {
   "title": "title",
   "description": "description",
-  "ingredients": "name",
   "instructions": "instructions",
   "image": "/path",
   "preparationTimeInMinutes": 1,
   "portions": 1,
   "calorificValue": 1,
   "name": "category",
-  "ingredient-name": "ingredient-name"
+  "ingredient": "ingredient-name"
 }
