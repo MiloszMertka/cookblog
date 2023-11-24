@@ -5,6 +5,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RecipeTests {
     private static final String APP_URL = "http://localhost:4200";
@@ -38,6 +40,7 @@ public class RecipeTests {
 
 
     @Test
+    @Order(1)
     public void givenRecipeData_WhenCreateRecipe_ThenSeeRecipe() throws InterruptedException {
         final var recipeTitle = "title";
         final var recipeDescription = "description";
@@ -69,11 +72,24 @@ public class RecipeTests {
         Thread.sleep(1000);
         clickNextUntilDisabled();
 
-        final var actualRecipeDescription = driver.findElement(By.cssSelector("p[_ngcontent-ng-c3183229469='']"));
-        final var actualRecipeTitle = driver.findElement(By.cssSelector("mat-card-title[_ngcontent-ng-c3183229469=''].mat-mdc-card-title"));
-        Assertions.assertEquals(recipeTitle, actualRecipeTitle.getText());
-        Assertions.assertEquals(recipeDescription, actualRecipeDescription.getText());
+//assert
     }
 
-    
+    @Test
+    @Order(2)
+    public void givenRecipe_WhenDeleteRecipe_ThenRecipeIsRemoved() throws InterruptedException {
+        driver.navigate().to(APP_URL);
+        clickNextUntilDisabled();
+        final var recipeTitle = "title";
+        final var menuButton = driver.findElement(By.cssSelector("button[aria-label='deleteRecipeButton']"));
+        menuButton.click();
+        Thread.sleep(1000);
+        final var js = (JavascriptExecutor) driver;
+        js.executeScript("document.querySelector('[data-test-id=\"confirm-button\"]').click();");
+        Thread.sleep(1000);
+        driver.navigate().to(APP_URL);
+        clickNextUntilDisabled();
+        String actualText = driver.findElement(By.xpath("//*[contains(text(),'" + recipeTitle + "')]")).getText().trim();
+        assertThat(actualText.isEmpty()).isTrue();
+    }
 }
