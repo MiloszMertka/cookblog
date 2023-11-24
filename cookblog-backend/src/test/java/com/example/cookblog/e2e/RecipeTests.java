@@ -2,6 +2,7 @@ package com.example.cookblog.e2e;
 
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -18,6 +19,23 @@ public class RecipeTests {
     void tearDown() {
         driver.quit();
     }
+
+
+    private void clickNextUntilDisabled() throws InterruptedException {
+        final var js = (JavascriptExecutor) driver;
+
+        while (true) {
+            var nextPageButton = driver.findElement(By.id("nextPageButton"));
+            Thread.sleep(1000);
+            if (nextPageButton.getAttribute("disabled") != null && nextPageButton.getAttribute("disabled").equals("true")) {
+                Thread.sleep(1000);
+                break;
+            }
+            Thread.sleep(1000);
+            js.executeScript("arguments[0].click();", nextPageButton);
+        }
+    }
+
 
     @Test
     public void givenRecipeData_WhenCreateRecipe_ThenSeeRecipe() throws InterruptedException {
@@ -36,7 +54,7 @@ public class RecipeTests {
         driver.findElement(By.cssSelector("textarea[data-test-id='instructions']")).sendKeys(recipeInstructions);
         driver.findElement(By.cssSelector("input[data-test-id='image']")).sendKeys(imagePath);
 
-        Thread.sleep(2000);
+        Thread.sleep(1000);
         final var categoryDropDown = driver.findElement(By.cssSelector("mat-select[data-test-id='category']"));
         categoryDropDown.click();
         Thread.sleep(1000);
@@ -48,10 +66,14 @@ public class RecipeTests {
         driver.findElement(By.cssSelector("input[data-test-id='ingredient-name']")).sendKeys(ingredientName);
 
         driver.findElement(By.cssSelector("button[aria-label='save']")).click();
+        Thread.sleep(1000);
+        clickNextUntilDisabled();
 
-        Thread.sleep(2000);
-
-
+        final var actualRecipeDescription = driver.findElement(By.cssSelector("p[_ngcontent-ng-c3183229469='']"));
+        final var actualRecipeTitle = driver.findElement(By.cssSelector("mat-card-title[_ngcontent-ng-c3183229469=''].mat-mdc-card-title"));
+        Assertions.assertEquals(recipeTitle, actualRecipeTitle.getText());
+        Assertions.assertEquals(recipeDescription, actualRecipeDescription.getText());
     }
 
+    
 }
