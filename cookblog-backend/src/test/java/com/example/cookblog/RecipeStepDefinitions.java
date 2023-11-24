@@ -22,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Objects;
@@ -55,6 +56,7 @@ public class RecipeStepDefinitions {
 
     @Before
     public void createCategory() {
+        deleteCategory();
         category = Category.builder()
                 .name("category")
                 .build();
@@ -158,10 +160,44 @@ public class RecipeStepDefinitions {
         resultActions.andExpect(status().isCreated());
     }
 
+    @When("I search for recipe")
+    public void iSearchForRecipe() throws Exception {
+        resultActions = mockMvc.perform(get("/recipes/search/{query}", recipe.getTitle()));
+    }
+
+    @Then("I should see requested recipe")
+    public void iShouldSeeRequestedRecipe() throws Exception {
+        resultActions.andExpect(status().isOk());
+        // TODO
+        resultActions.andExpect(status().isOk())
+                .andExpectAll(jsonPath("$[?(@.id != -1)]").exists(),
+                        jsonListContentChecker("title",
+                                recipe.getTitle()),
+                        jsonListContentChecker("description",
+                                recipe.getDescription()),
+                        jsonListContentChecker("ingredients[0].name",
+                                recipe.getIngredients().iterator().next().getName()),
+                        jsonListContentChecker("ingredients[0].quantity.amount",
+                                recipe.getIngredients().iterator().next().getQuantity().getAmount()),
+                        jsonListContentChecker("ingredients[0].quantity.unit",
+                                recipe.getIngredients().iterator().next().getQuantity().getUnit()),
+                        jsonListContentChecker("instructions",
+                                recipe.getInstructions()),
+                        jsonListContentChecker("image.path",
+                                recipe.getImage().getPath()));
+    }
+
     @When("I get a recipe")
     public void iGetARecipe() throws Exception {
         resultActions = mockMvc.perform(get("/recipes/{id}",
                 recipeRepository.findByTitle(createRecipeRequest.title()).orElseThrow().getId()));
+    }
+
+    @Then("I should see photo for the dish")
+    public void iShouldSeePhotoForTheDish() throws Exception {
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.image.path")
+                        .value(createRecipeRequest.image().path()));
     }
 
     @Then("I should see created recipe")
@@ -488,4 +524,7 @@ public class RecipeStepDefinitions {
                 );
     }
 
+    private ResultMatcher jsonListContentChecker(String attributeName, Object expectedValue) {
+        return jsonPath("$[?(@." + attributeName + " == '" + expectedValue + "')]").exists();
+    }
 }

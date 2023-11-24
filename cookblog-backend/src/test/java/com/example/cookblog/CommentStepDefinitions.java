@@ -101,7 +101,7 @@ public class CommentStepDefinitions {
     @And("There is a recipe to comment on")
     public void thereIsARecipeToCommentOn() throws Exception {
         recipeRepository.save(recipe);
-        recipeId = recipeRepository.findByTitle(recipe.getTitle()).getId();
+        recipeId = recipeRepository.findByTitle(recipe.getTitle()).orElseThrow().getId();
     }
 
     @When("I post a comment")
@@ -126,14 +126,14 @@ public class CommentStepDefinitions {
                 .author("author")
                 .content("content")
                 .build();
-        final var response = recipeRepository.findByTitle(recipe.getTitle());
+        final var response = recipeRepository.findByTitle(recipe.getTitle()).orElseThrow();
         response.getComments().add(comment);
         recipeRepository.save(response);
     }
 
     @When("I deleted a comment")
     public void iDeletedAComment() throws Exception {
-        recipeId = recipeRepository.findByTitle(recipe.getTitle()).getId();
+        recipeId = recipeRepository.findByTitle(recipe.getTitle()).orElseThrow().getId();
         commentId = recipeRepository.findById(recipeId).get()
                 .getComments().stream().findAny().get().getId();
 
