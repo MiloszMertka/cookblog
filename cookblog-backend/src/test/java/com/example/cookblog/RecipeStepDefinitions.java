@@ -155,10 +155,18 @@ public class RecipeStepDefinitions {
                 .content(content));
     }
 
+    @When("I get a recipe")
+    public void iGetARecipe() throws Exception {
+        resultActions = mockMvc.perform(get("/recipes/{id}",
+                recipeRepository.findByTitle(createRecipeRequest.title()).orElseThrow().getId()));
+    }
+
     @Then("New recipe should be created")
     public void newRecipeShouldBeCreated() throws Exception {
         resultActions.andExpect(status().isCreated());
     }
+
+    // Feature: Search the recipe
 
     @When("I search for recipe")
     public void iSearchForRecipe() throws Exception {
@@ -168,7 +176,6 @@ public class RecipeStepDefinitions {
     @Then("I should see requested recipe")
     public void iShouldSeeRequestedRecipe() throws Exception {
         resultActions.andExpect(status().isOk());
-        // TODO
         resultActions.andExpect(status().isOk())
                 .andExpectAll(jsonPath("$[?(@.id != -1)]").exists(),
                         jsonListContentChecker("title",
@@ -187,11 +194,7 @@ public class RecipeStepDefinitions {
                                 recipe.getImage().getPath()));
     }
 
-    @When("I get a recipe")
-    public void iGetARecipe() throws Exception {
-        resultActions = mockMvc.perform(get("/recipes/{id}",
-                recipeRepository.findByTitle(createRecipeRequest.title()).orElseThrow().getId()));
-    }
+    // Feature: Add photo to recipe
 
     @Then("I should see photo for the dish")
     public void iShouldSeePhotoForTheDish() throws Exception {
@@ -199,6 +202,8 @@ public class RecipeStepDefinitions {
                 .andExpect(jsonPath("$.image.path")
                         .value(createRecipeRequest.image().path()));
     }
+
+    // Feature: Create new category
 
     @Then("I should see created recipe")
     public void iShouldSeeCreatedRecipe() throws Exception {
@@ -228,8 +233,8 @@ public class RecipeStepDefinitions {
                 );
     }
 
-
     // Feature: Delete a recipe
+
     @When("I delete the recipe")
     public void iDeleteTheRecipeWithTitle() throws Exception {
         resultActions = mockMvc.perform(delete("/recipes/{id}", recipe.getId()))
@@ -243,6 +248,7 @@ public class RecipeStepDefinitions {
     }
 
     // Feature: Get a recipe
+
     @When("I request to get the recipe by its ID {string}")
     public void iRequestToGetTheRecipeByItsID(String title) throws Exception {
         resultActions = mockMvc.perform(get("/recipes/{id}",

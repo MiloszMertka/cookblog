@@ -55,6 +55,8 @@ public class CategoryStepDefinitions {
         recipeRepository.deleteAll();
     }
 
+    // Feature: Create new category
+
     @Given("I prepared category data")
     public void iPreparedCategoryData() {
         category = Category.builder()
@@ -70,22 +72,18 @@ public class CategoryStepDefinitions {
                 .content(content));
     }
 
-    @Then("New category should be created")
-    public void newCategoryShouldBeCreated() throws Exception {
-        resultActions.andExpect(status().isCreated());
-    }
-
     @When("I get all categories")
     public void iGetAllCategories() throws Exception {
         resultActions = mockMvc.perform(get("/categories"));
     }
-
 
     @Then("I should see created category")
     public void iShouldSeeCreatedCategory() throws Exception {
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value(category.getName()));
     }
+
+    // Feature: Get a exist category
 
     @Given("There are existing categories in the blog with title {string}")
     public void thereAreExistingCategoriesInTheBlogWithTitle(String name) {
@@ -94,6 +92,37 @@ public class CategoryStepDefinitions {
                 .build();
         categoryRepository.save(category);
     }
+
+    @When("I request to get the category by its ID {string}")
+    public void iRequestToGetTheCategoryByItsID(String name) throws Exception {
+        resultActions = mockMvc.perform(get("/categories/{id}", category.getId()))
+                .andExpect(status().isOk());
+    }
+
+    @Then("I should receive the details of the requested category")
+    public void iShouldReceiveTheDetailsOfTheRequestedCategory() throws Exception {
+        resultActions.andExpect(status().isOk())
+                .andExpectAll(
+                        jsonPath("$.id").exists(),
+                        jsonPath("$.name")
+                                .value(category.getName()));
+    }
+
+    // Feature: Delete exist category
+
+    @When("I delete the category")
+    public void iDeleteTheCategory() throws Exception {
+        resultActions = mockMvc.perform(delete("/categories/{id}", category.getId()))
+                .andExpect(status().isNoContent());
+    }
+
+    @Then("The category should no longer exist")
+    public void theCategoryShouldNoLongerExist() throws Exception {
+        mockMvc.perform(get("/categories/{id}", category.getId()))
+                .andExpect(status().isNotFound());
+    }
+
+    // Update exist category
 
     @And("I prepared update category data")
     public void iPreparedUpdateCategoryData() {
@@ -112,39 +141,13 @@ public class CategoryStepDefinitions {
         category = categoryRepository.findById(category.getId()).orElse(null);
     }
 
-
     @Then("I should see updated category")
     public void iShouldSeeUpdatedCategory() throws Exception {
         resultActions.andExpect(status().isNoContent());
         assertEquals(category.getName(), "Updated");
     }
 
-    @When("I delete the category")
-    public void iDeleteTheCategory() throws Exception {
-        resultActions = mockMvc.perform(delete("/categories/{id}", category.getId()))
-                .andExpect(status().isNoContent());
-    }
-
-    @Then("The category should no longer exist")
-    public void theCategoryShouldNoLongerExist() throws Exception {
-        mockMvc.perform(get("/categories/{id}", category.getId()))
-                .andExpect(status().isNotFound());
-    }
-
-    @When("I request to get the category by its ID {string}")
-    public void iRequestToGetTheCategoryByItsID(String name) throws Exception {
-        resultActions = mockMvc.perform(get("/categories/{id}", category.getId()))
-                .andExpect(status().isOk());
-    }
-
-    @Then("I should receive the details of the requested category")
-    public void iShouldReceiveTheDetailsOfTheRequestedCategory() throws Exception {
-        resultActions.andExpect(status().isOk())
-                .andExpectAll(
-                        jsonPath("$.id").exists(),
-                        jsonPath("$.name")
-                                .value(category.getName()));
-    }
+    // Request category for specific recipe
 
     @Given("The recipe with category exist")
     public void thereAreExistingRecipeWithCategory() throws Exception {
