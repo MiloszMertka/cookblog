@@ -9,6 +9,7 @@ describe('Recipe Tests', () => {
       cy.contains('Create category').click();
       cy.get('input[data-test-id="name"]').type(category.name);
       cy.get('button[aria-label="save"]').click();
+      cy.wait(1000);
       cy.visit('/');
       cy.get('button[aria-label="menu"]').click();
       cy.wait(1000);
@@ -21,6 +22,7 @@ describe('Recipe Tests', () => {
       .contains('navigate_next')
       .then((nextButton) => {
         const isDisabled = nextButton.closest('button').prop('disabled');
+        cy.wait(1000);
         if (!isDisabled) {
           cy.wrap(nextButton).click({ force: true });
           cy.wait(1000);
@@ -62,6 +64,7 @@ describe('Recipe Tests', () => {
       cy.get('input[data-test-id="ingredient-name"]').type(recipe.ingredient);
 
       cy.get('button[aria-label="save"]').click();
+      cy.wait(1000);
       cy.visit('/');
       cy.wait(1000);
 
@@ -149,8 +152,9 @@ describe('Recipe Tests', () => {
       cy.get('input[data-test-id="ingredient-name"]').type(
         recipe.ingredient + 'edited',
       );
-
+      cy.wait(1000);
       cy.get('button[aria-label="save"]').click();
+      cy.wait(1000);
       cy.visit('/');
 
       clickNextUntilDisabled();

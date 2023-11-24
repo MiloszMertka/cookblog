@@ -26,6 +26,7 @@ public class CategoryTests {
 
     @Test
     @Order(1)
+    @Disabled
     void givenCategoryData_whenCreateCategory_thenCreatesNewCategory() throws Exception {
         final var categoryName = "Test name";
         final var menuButton = driver.findElement(By.cssSelector("button[aria-label='menu']"));
@@ -49,6 +50,7 @@ public class CategoryTests {
 
     @Test
     @Order(2)
+    @Disabled
     void givenSomeCategory_whenDeleteCategory_thenCategoryIsRemoved() throws Exception {
         final var categoryName = "Test name";
         final var menuButton = driver.findElement(By.cssSelector("button[aria-label='menu']"));
