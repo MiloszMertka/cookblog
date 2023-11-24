@@ -29,6 +29,12 @@ describe('Recipe Tests', () => {
       });
   };
 
+  const clickNextButton = () => {
+    cy.get('mat-icon[aria-hidden="true"][data-mat-icon-type="font"]')
+      .contains('navigate_next')
+      .click({ force: true });
+  };
+
   it('Should create new recipe', () => {
     cy.fixture('recipe').then((recipe) => {
       cy.visit('/');
@@ -83,12 +89,6 @@ describe('Recipe Tests', () => {
       cy.contains(recipe.portions).should('exist');
     });
   });
-
-  const clickNextButton = () => {
-    cy.get('mat-icon[aria-hidden="true"][data-mat-icon-type="font"]')
-      .contains('navigate_next')
-      .click({ force: true });
-  };
 
   it('Should browse recipes', () => {
     cy.visit('/');
