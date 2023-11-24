@@ -3,10 +3,10 @@
   "description": "description",
   "ingredients": "name",
   "instructions": "instructions",
-  "image":"/path" ,
+  "image": "/path",
   "preparationTimeInMinutes": 1,
   "portions": 1,
   "calorificValue": 1,
-   "name": "category",
-   "ingredient-name":"ingredient-name"
+  "name": "category",
+  "ingredient-name": "ingredient-name"
 }

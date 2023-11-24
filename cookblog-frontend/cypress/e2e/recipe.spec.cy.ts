@@ -2,7 +2,6 @@ describe('Recipe Tests', () => {
   let categoryName: string;
 
   before(() => {
-    // Dodanie nowej kategorii przed rozpoczęciem testów
     cy.fixture('category').then((category) => {
       cy.visit('/');
       cy.get('button[aria-label="menu"]').click();
@@ -31,7 +30,6 @@ describe('Recipe Tests', () => {
   };
 
   it('Should create new recipe', () => {
-    // Dodanie nowego przepisu
     cy.fixture('recipe').then((recipe) => {
       cy.visit('/');
       cy.wait(1000);
@@ -64,6 +62,7 @@ describe('Recipe Tests', () => {
       cy.wait(1000);
 
       clickNextUntilDisabled();
+      cy.wait(1000);
 
       cy.contains(recipe.title).should('exist');
       cy.contains(recipe.description).should('exist');
@@ -85,26 +84,33 @@ describe('Recipe Tests', () => {
     });
   });
 
+  const clickNextButton = () => {
+    cy.get('mat-icon[aria-hidden="true"][data-mat-icon-type="font"]')
+      .contains('navigate_next')
+      .click({ force: true });
+  };
+
   it('Should browse recipes', () => {
     cy.visit('/');
+    cy.wait(1000);
     cy.contains('Dolores porro et maiores deserunt sit consequatur.').should(
       'exist',
     );
     cy.contains(
       'Explicabo non et nam amet. Vitae laboriosam ipsa itaque. Et molestiae voluptatibus minima sint.',
     ).should('exist');
-    cy.get('mat-icon[aria-hidden="true"][data-mat-icon-type="font"]')
-      .contains('navigate_next')
-      .click({ force: true });
+
+    clickNextButton();
+    cy.wait(1000);
     cy.contains(
       'Rerum porro tempora voluptas ipsum et facilis quibusdam.',
     ).should('exist');
     cy.contains(
       'Omnis error aperiam. Veritatis id ullam sit numquam qui et nulla. Odio maxime adipisci velit. Vitae ut corrupti est provident. Aliquid non temporibus nihil dolores.',
     ).should('exist');
-    cy.get('mat-icon[aria-hidden="true"][data-mat-icon-type="font"]')
-      .contains('navigate_next')
-      .click({ force: true });
+
+    clickNextButton();
+    cy.wait(1000);
     cy.contains('Deleniti eligendi reiciendis ut vel.').should('exist');
     cy.contains(
       'Quisquam laboriosam omnis mollitia dolorem in. Atque atque ipsam recusandae. Laudantium quo minus. Tempora omnis qui molestiae dolores ea ea sunt. Vero optio id odio.',
