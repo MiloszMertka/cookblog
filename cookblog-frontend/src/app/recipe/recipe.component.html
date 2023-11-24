@@ -10,7 +10,7 @@
       Preparation time:
       <strong>{{ recipe.preparationTimeInMinutes }} min.</strong>
     </li>
-    <li *ngIf="recipe.calorificValue">
+    <li aria-label="caloriesInformation" *ngIf="recipe.calorificValue">
       Calories: <strong>{{ recipe.calorificValue }} kcal</strong>
     </li>
     <li *ngIf="recipe.portions">

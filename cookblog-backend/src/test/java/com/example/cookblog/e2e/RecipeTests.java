@@ -76,7 +76,28 @@ public class RecipeTests {
     }
 
     @Test
-    @Order(2)
+    @Order(1)
+    public void givenRecipe_WhenRead_ThenShouldRead() throws InterruptedException {
+        final var recipeTitle = "title";
+        final var recipeDescription = "description";
+        final var recipeInstructions = "instructions";
+        final var preparationTimeInMinutes = "1";
+        final var portions = "1";
+        final var imagePath = "https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?q=80&w=3870&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+        final var ingredientName = "ingredient";
+        final var calorificValue = "1";
+        driver.navigate().to(APP_URL);
+        clickNextUntilDisabled();
+        final var readButton = driver.findElement(By.cssSelector("a[aria-label='readRecipeButton']"));
+        readButton.click();
+        Thread.sleep(1000);
+
+        final var calorificValueInput = driver.findElement(By.cssSelector("li[aria-label='caloriesInformation']"));
+        assertThat(calorificValueInput.getText()).isEqualTo(calorificValue);
+    }
+
+    @Test
+    @Order(3)
     public void givenRecipe_WhenDeleteRecipe_ThenRecipeIsRemoved() throws InterruptedException {
         driver.navigate().to(APP_URL);
         clickNextUntilDisabled();
