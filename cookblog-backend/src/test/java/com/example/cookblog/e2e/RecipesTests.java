@@ -1,7 +1,10 @@
 package com.example.cookblog.e2e;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -124,13 +127,14 @@ public class RecipesTests {
         driver.get(APP_URL + "/recipes/edit/1");
         Thread.sleep(1000);
         final var ingredientNamesAfterSave = driver.findElements(By.cssSelector("input[data-test-id='ingredient-name']"));
-        final var newIngredientNameAfterSave = ingredientNamesAfterSave.get(1);
+        final var newIngredientNameAfterSave = ingredientNamesAfterSave.get(0);
         String resultIngredientName = newIngredientNameAfterSave.getAttribute("value");
         final var ingredientAmountsAfterSave = driver.findElements(By.cssSelector("input[data-test-id='ingredient-amount']"));
-        final var newIngredientAmountsAfterSave = ingredientAmountsAfterSave.get(1);
+        final var newIngredientAmountsAfterSave = ingredientAmountsAfterSave.get(0);
         String resultIngredientAmount = newIngredientAmountsAfterSave.getAttribute("value");
 
         assertEquals(ingredientName, resultIngredientName);
         assertEquals(amount, resultIngredientAmount);
     }
+
 }
