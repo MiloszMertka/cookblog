@@ -22,7 +22,6 @@ describe('Recipe Tests', () => {
       .contains('navigate_next')
       .then((nextButton) => {
         const isDisabled = nextButton.closest('button').prop('disabled');
-        cy.wait(1000);
         if (!isDisabled) {
           cy.wrap(nextButton).click({ force: true });
           cy.wait(1000);
@@ -132,10 +131,11 @@ describe('Recipe Tests', () => {
       cy.get('textarea[data-test-id="instructions"]').type(
         recipe.instructions + 'edited',
       );
-      cy.get('input[data-test-id="image"]').type(recipe.image + 'edited');
+
+      cy.get('input[data-test-id="image"]').clear().type('edited');
 
       cy.get('mat-select[data-test-id="category"]').click();
-      cy.get('mat-option').contains(categoryName).click();
+      cy.get('mat-option').contains("libero").click();
 
       cy.get('input[data-test-id="preparationTimeInMinutes"]').type(
         recipe.preparationTimeInMinutes,
@@ -145,9 +145,7 @@ describe('Recipe Tests', () => {
       cy.get('input[data-test-id="portions"]').type(recipe.portions + 1);
       cy.get('input[data-test-id="calorificValue"]').type(
         recipe.calorificValue + 1,
-        {
-          force: true,
-        },
+        { force: true },
       );
       cy.get('input[data-test-id="ingredient-name"]').type(
         recipe.ingredient + 'edited',
@@ -167,6 +165,8 @@ describe('Recipe Tests', () => {
       cy.contains(recipe.preparationTimeInMinutes + 1).should('exist');
       cy.contains(recipe.calorificValue + 1).should('exist');
       cy.contains(recipe.portions + 1).should('exist');
+      cy.contains("edited").should('exist');
+
     });
   });
 
