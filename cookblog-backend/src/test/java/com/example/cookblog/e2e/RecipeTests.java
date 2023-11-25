@@ -162,6 +162,86 @@ public class RecipeTests {
 
     @Test
     @Order(4)
+    public void givenRecipe_WhenEdit_ThenSeeEditedRecipe() throws InterruptedException {
+        final var recipeTitleEdited = "Editedmytitle";
+        final var recipeDescriptionEdited = "Editedmydescription";
+        final var recipeInstructionsEdited = "Editedmyinstructions";
+        final var preparationTimeInMinutesEdited = "91";
+        final var portionsEdited = "82";
+        final var imagePathEdited = "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+        final var calorificValueEdited = "73";
+        driver.navigate().to(APP_URL);
+        Thread.sleep(1000);
+        clickNextUntilDisabled();
+        Thread.sleep(1000);
+        final var editButton = driver.findElement(By.cssSelector("a[aria-label='editRecipeButton']"));
+        editButton.click();
+
+        final var titleInput = driver.findElement(By.cssSelector("input[data-test-id='title']"));
+        titleInput.clear();
+        titleInput.sendKeys(recipeTitleEdited);
+        Thread.sleep(500);
+
+
+        final var descriptionInput = driver.findElement(By.cssSelector("textarea[data-test-id='description']"));
+        descriptionInput.clear();
+        descriptionInput.sendKeys(recipeDescriptionEdited);
+        Thread.sleep(500);
+
+        final var instructionsInput = driver.findElement(By.cssSelector("textarea[data-test-id='instructions']"));
+        instructionsInput.clear();
+        instructionsInput.sendKeys(recipeInstructionsEdited);
+        Thread.sleep(500);
+
+        final var imageInput = driver.findElement(By.cssSelector("input[data-test-id='image']"));
+        imageInput.clear();
+        imageInput.sendKeys(imagePathEdited);
+        Thread.sleep(500);
+
+        final var preparationTimeInput = driver.findElement(By.cssSelector("input[data-test-id='preparationTimeInMinutes']"));
+        preparationTimeInput.clear();
+        preparationTimeInput.sendKeys(preparationTimeInMinutesEdited);
+        Thread.sleep(500);
+
+        final var portionsInput = driver.findElement(By.cssSelector("input[data-test-id='portions']"));
+        portionsInput.clear();
+        portionsInput.sendKeys(portionsEdited);
+        Thread.sleep(500);
+
+        final var calorificValueInput = driver.findElement(By.cssSelector("input[data-test-id='calorificValue']"));
+        calorificValueInput.clear();
+        calorificValueInput.sendKeys(calorificValueEdited);
+
+        Thread.sleep(1000);
+        driver.findElement(By.cssSelector("button[aria-label='save']")).click();
+        Thread.sleep(1000);
+        driver.navigate().to(APP_URL);
+        clickNextUntilDisabled();
+        Thread.sleep(1000);
+        final var readButton = driver.findElement(By.cssSelector("a[aria-label='readRecipeButton']"));
+        readButton.click();
+        Thread.sleep(1000);
+
+        final var titleElement = driver.findElement(By.xpath("//*[contains(text(),'" + recipeTitleEdited + "')]"));
+        assertThat(titleElement.isDisplayed()).isTrue();
+        final var recipeDescriptionElement = driver.findElement(By.xpath("//*[contains(text(),'" + recipeDescriptionEdited + "')]"));
+        assertThat(recipeDescriptionElement.isDisplayed()).isTrue();
+
+        final var instructionsElement = driver.findElement(By.xpath("//*[contains(text(),'" + recipeInstructionsEdited + "')]"));
+        assertThat(instructionsElement.isDisplayed()).isTrue();
+
+        final var preparationTimeInMinutesElement = driver.findElement(By.xpath("//*[contains(text(),'" + preparationTimeInMinutesEdited + " min." + "')]"));
+        assertThat(preparationTimeInMinutesElement.isDisplayed()).isTrue();
+        final var calorificValueElement = driver.findElement(By.xpath("//*[contains(text(),'" + calorificValueEdited + " kcal" + "')]"));
+        assertThat(calorificValueElement.isDisplayed()).isTrue();
+        final var portionsElement = driver.findElement(By.xpath("//*[contains(normalize-space(),'" + portionsEdited + "')]"));
+        assertThat(portionsElement.isDisplayed()).isTrue();
+        Thread.sleep(1000);
+
+    }
+
+    @Test
+    @Order(5)
     public void givenRecipe_WhenDeleteRecipe_ThenRecipeIsRemoved() throws InterruptedException {
         driver.navigate().to(APP_URL);
         clickNextUntilDisabled();

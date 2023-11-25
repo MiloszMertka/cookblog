@@ -23,7 +23,7 @@
       >
         Read
       </a>
-      <a
+      <a aria-label="editRecipeButton"
         *ngIf="isAuthenticated"
         [routerLink]="['/', 'recipes', 'edit', recipe.id]"
         class="button"
