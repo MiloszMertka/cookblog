@@ -98,7 +98,21 @@ public class RecipesTests {
         driver.get(APP_URL + "/recipes/edit/1");
         Thread.sleep(1000);
         portionsInput = driver.findElement(By.cssSelector("input[data-test-id='portions']"));
-        assertThat(portionsInput.getAttribute("value")).isEqualTo(portions);
+        assertThat(portionsInput.getAttribute("value")).isEqualTo(portions)\;
     }
 
+    @Test
+    public void givenRecipeData_whenAddInformationAboutPhotoUrl_shouldSuccessfullyAddPhoto() throws Exception {
+        // TODO Dodawnie zdjęć
+    }
+
+    @Test
+    public void givenRecipeQuery_whenSearchedWithQuery_shouldShowResultOfTheSearch() throws Exception {
+        // TODO Wyszukiwanie przepisów
+    }
+
+    @Test
+    public void givenRecipeData_whenRequestCategoryForRecipe_shouldProperlyRetrieveCategory() throws Exception {
+        // TODO Pobieranie kategorii przepisu
+    }
 }
