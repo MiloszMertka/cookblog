@@ -56,11 +56,10 @@ public class RecipeStepDefinitions {
 
     @Before
     public void createCategory() {
-        deleteCategory();
         category = Category.builder()
                 .name("category")
                 .build();
-        categoryRepository.save(category);
+        category = categoryRepository.save(category);
     }
 
     @After
@@ -87,7 +86,7 @@ public class RecipeStepDefinitions {
                 .image(Image.builder()
                         .path("image-path")
                         .build())
-                .category(category)
+                .category(categoryRepository.findByName(category.getName()).orElseThrow())
                 .build();
         recipeRepository.save(recipe);
     }
@@ -510,8 +509,7 @@ public class RecipeStepDefinitions {
 
     @When("I request to get the category with its recipes by its ID")
     public void iRequestToGetTheCategoryWithItsRecipesByItsID() throws Exception {
-        category = categoryRepository.findById(category.getId()).orElse(null);
-        assert category != null;
+        category = categoryRepository.findByName(category.getName()).orElseThrow();
         resultActions = mockMvc.perform(get("/categories/{id}", category.getId()));
     }
 
@@ -533,4 +531,5 @@ public class RecipeStepDefinitions {
     private ResultMatcher jsonListContentChecker(String attributeName, Object expectedValue) {
         return jsonPath("$[?(@." + attributeName + " == '" + expectedValue + "')]").exists();
     }
+
 }

@@ -6,6 +6,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestMethodOrder(OrderAnnotation.class)
 public class RecipesTests {
@@ -140,6 +141,37 @@ public class RecipesTests {
         final var element = driver.findElement(By.xpath("//*[contains(text(),'" + recipeName + "')]"));
         assertThat(element.isDisplayed()).isTrue();
     }
+  
+    @Test
+    public void givenRecipeData_whenAddListOfIngredients_shouldSuccessfullyAdd() throws Exception {
+        String ingredientName = "ingredientTestName";
+        String amount = "99";
+        driver.get(APP_URL + "/recipes/edit/1");
+        Thread.sleep(1000);
+        final var addIngredientButton = driver.findElement(By.xpath("//*[contains(text(),'Add ingredient')]"));
+        addIngredientButton.click();
+        Thread.sleep(1000);
+        final var ingredientsNameInputs = driver.findElements(By.cssSelector("input[data-test-id='ingredient-name']"));
+        final var newIngredientNameInput = ingredientsNameInputs.get(ingredientsNameInputs.size() - 1);
+        newIngredientNameInput.sendKeys(ingredientName);
+        final var ingredientsAmounts = driver.findElements(By.cssSelector("input[data-test-id='ingredient-amount']"));
+        final var newIngredientAmount = ingredientsAmounts.get(ingredientsAmounts.size() - 1);
+        newIngredientAmount.clear();
+        newIngredientAmount.sendKeys(amount);
+        final var saveButton = driver.findElement(By.cssSelector("button[aria-label='save']"));
+        saveButton.click();
+        Thread.sleep(1000);
+        driver.get(APP_URL + "/recipes/edit/1");
+        Thread.sleep(1000);
+        final var ingredientNamesAfterSave = driver.findElements(By.cssSelector("input[data-test-id='ingredient-name']"));
+        final var newIngredientNameAfterSave = ingredientNamesAfterSave.get(1);
+        String resultIngredientName = newIngredientNameAfterSave.getAttribute("value");
+        final var ingredientAmountsAfterSave = driver.findElements(By.cssSelector("input[data-test-id='ingredient-amount']"));
+        final var newIngredientAmountsAfterSave = ingredientAmountsAfterSave.get(1);
+        String resultIngredientAmount = newIngredientAmountsAfterSave.getAttribute("value");
+
+        assertEquals(ingredientName, resultIngredientName);
+        assertEquals(amount, resultIngredientAmount);
 
     @Test
     public void givenRecipeData_whenRequestRecipeForCategory_shouldProperlyRetrieveRecipeOfThatCategory() throws Exception {
