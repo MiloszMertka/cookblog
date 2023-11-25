@@ -2,5 +2,7 @@
   "name": "Test name",
   "calorificValue": 100,
   "preparationTimeInMinutes": 7,
-  "portions": 8
+  "portions": 8,
+  "ingredientName": "ingredientTestName",
+  "amount": 99
 }
