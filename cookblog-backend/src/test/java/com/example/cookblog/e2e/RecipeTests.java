@@ -38,6 +38,18 @@ public class RecipeTests {
         }
     }
 
+    private void clickNextPage() throws InterruptedException {
+        final var js = (JavascriptExecutor) driver;
+
+        var nextPageButton = driver.findElement(By.id("nextPageButton"));
+        Thread.sleep(1000);
+
+        if (nextPageButton.getAttribute("disabled") == null || !nextPageButton.getAttribute("disabled").equals("true")) {
+            Thread.sleep(1000);
+            js.executeScript("arguments[0].click();", nextPageButton);
+        }
+    }
+
 
     @Test
     @Order(1)
@@ -114,6 +126,42 @@ public class RecipeTests {
 
     @Test
     @Order(3)
+    public void givenRecipes_WhenBrowsing_ThenSeeRecipes() throws InterruptedException {
+        final var recipeTitleFirstPage = "Dolores porro et maiores deserunt sit consequatur.";
+        final var recipeDescriptionFirstPage = "Explicabo non et nam amet. Vitae laboriosam ipsa itaque. Et molestiae voluptatibus minima sint.";
+        final var recipeTitleSecondPage = "Rerum porro tempora voluptas ipsum et facilis quibusdam.";
+        final var recipeDescriptionSecondPage = "Omnis error aperiam. Veritatis id ullam sit numquam qui et nulla. Odio maxime adipisci velit. Vitae ut corrupti est provident. Aliquid non temporibus nihil dolores.";
+        final var recipeTitleThirdPage = "Necessitatibus enim quasi animi facere ut quos.";
+        final var recipeDescriptionThirdPage = "Temporibus nostrum ratione aut laborum molestiae quia quod. Qui fuga et laboriosam praesentium eum. Earum ad architecto hic fugit reiciendis. Beatae ad voluptas. Nostrum odit totam.";
+        driver.navigate().to(APP_URL);
+        Thread.sleep(1000);
+
+        final var recipeTitleFirstPageElement = driver.findElement(By.xpath("//*[contains(text(),'" + recipeTitleFirstPage + "')]"));
+        assertThat(recipeTitleFirstPageElement.isDisplayed()).isTrue();
+        final var recipeDescriptionFirstPageElement = driver.findElement(By.xpath("//*[contains(text(),'" + recipeDescriptionFirstPage + "')]"));
+        assertThat(recipeDescriptionFirstPageElement.isDisplayed()).isTrue();
+        clickNextPage();
+        Thread.sleep(1000);
+
+        final var recipeTitleSecondPageElement = driver.findElement(By.xpath("//*[contains(text(),'" + recipeTitleSecondPage + "')]"));
+        assertThat(recipeTitleSecondPageElement.isDisplayed()).isTrue();
+        final var recipeDescriptionSecondPageElement = driver.findElement(By.xpath("//*[contains(text(),'" + recipeDescriptionSecondPage + "')]"));
+        assertThat(recipeDescriptionSecondPageElement.isDisplayed()).isTrue();
+        clickNextPage();
+        Thread.sleep(1000);
+
+        final var recipeTitleThirdPageElement = driver.findElement(By.xpath("//*[contains(text(),'" + recipeTitleThirdPage + "')]"));
+        assertThat(recipeTitleThirdPageElement.isDisplayed()).isTrue();
+        Thread.sleep(1000);
+
+        final var recipeDescriptionThirdPageElement = driver.findElement(By.xpath("//*[contains(text(),'" + recipeDescriptionThirdPage + "')]"));
+        Thread.sleep(1000);
+        assertThat(recipeDescriptionThirdPageElement.isDisplayed()).isTrue();
+
+    }
+
+    @Test
+    @Order(4)
     public void givenRecipe_WhenDeleteRecipe_ThenRecipeIsRemoved() throws InterruptedException {
         driver.navigate().to(APP_URL);
         clickNextUntilDisabled();
