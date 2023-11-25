@@ -144,7 +144,7 @@ public class RecipesTests {
         final var element = driver.findElement(By.xpath("//*[contains(text(),'" + recipeName + "')]"));
         assertThat(element.isDisplayed()).isTrue();
     }
-  
+
     @Test
     public void givenRecipeData_whenAddListOfIngredients_shouldSuccessfullyAdd() throws Exception {
         String ingredientName = "ingredientTestName";
@@ -175,6 +175,7 @@ public class RecipesTests {
 
         assertEquals(ingredientName, resultIngredientName);
         assertEquals(amount, resultIngredientAmount);
+    }
 
     @Test
     public void givenRecipeData_whenRequestRecipeForCategory_shouldProperlyRetrieveRecipeOfThatCategory() throws Exception {
