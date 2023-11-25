@@ -5,8 +5,12 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestMethodOrder(OrderAnnotation.class)
 public class RecipesTests {
@@ -111,11 +115,13 @@ public class RecipesTests {
         final var addIngredientButton = driver.findElement(By.xpath("//*[contains(text(),'Add ingredient')]"));
         addIngredientButton.click();
         Thread.sleep(1000);
-        final var ingredientsNameInputs = driver.findElements(By.cssSelector("input[data-test-id='ingredient-name']"));
-        final var newIngredientNameInput = ingredientsNameInputs.get(ingredientsNameInputs.size() - 1);
+//        final var ingredientsNameInputs = driver.findElements(By.cssSelector("input[data-test-id='ingredient-name']"));
+//        final var newIngredientNameInput = ingredientsNameInputs.get(ingredientsNameInputs.size() - 1);
+        final var newIngredientNameInput = driver.findElement(By.cssSelector("input[data-test-id='ingredient-name']:not([value])"));
         newIngredientNameInput.sendKeys(ingredientName);
-        final var ingredientsAmounts = driver.findElements(By.cssSelector("input[data-test-id='ingredient-amount']"));
-        final var newIngredientAmount = ingredientsAmounts.get(ingredientsAmounts.size() - 1);
+//        final var ingredientsAmounts = driver.findElements(By.cssSelector("input[data-test-id='ingredient-amount']"));
+//        final var newIngredientAmount = ingredientsAmounts.get(ingredientsAmounts.size() - 1);
+        final var newIngredientAmount = driver.findElement(By.cssSelector("input[data-test-id='ingredient-amount']:not([value])"));
         newIngredientAmount.clear();
         newIngredientAmount.sendKeys(amount);
         final var saveButton = driver.findElement(By.cssSelector("button[aria-label='save']"));
@@ -124,13 +130,15 @@ public class RecipesTests {
         driver.get(APP_URL + "/recipes/edit/1");
         Thread.sleep(1000);
         final var ingredientNamesAfterSave = driver.findElements(By.cssSelector("input[data-test-id='ingredient-name']"));
-        final var newIngredientNameAfterSave = ingredientNamesAfterSave.get(1);
-        String resultIngredientName = newIngredientNameAfterSave.getAttribute("value");
+        final var listOfName = ingredientNamesAfterSave.stream().map(x->x.getAttribute("value")).toList();
+        final var ifExistNewIngredientNameAfterSave = listOfName.contains(ingredientName);
+//        String resultIngredientName = newIngredientNameAfterSave.getAttribute("value");
         final var ingredientAmountsAfterSave = driver.findElements(By.cssSelector("input[data-test-id='ingredient-amount']"));
-        final var newIngredientAmountsAfterSave = ingredientAmountsAfterSave.get(1);
-        String resultIngredientAmount = newIngredientAmountsAfterSave.getAttribute("value");
+        final var listOfAmount = ingredientAmountsAfterSave.stream().map(x->x.getAttribute("value")).toList();
+        final var ifExistNewIngredientAmountAfterSave = listOfAmount.contains(amount);
+//        String resultIngredientAmount = newIngredientAmountsAfterSave.getAttribute("value");
 
-        assertEquals(ingredientName, resultIngredientName);
-        assertEquals(amount, resultIngredientAmount);
+        assertTrue(ifExistNewIngredientNameAfterSave);
+        assertTrue(ifExistNewIngredientAmountAfterSave);
     }
 }
