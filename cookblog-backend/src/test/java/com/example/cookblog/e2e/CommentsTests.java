@@ -27,46 +27,43 @@ public class CommentsTests {
     @Test
     @Order(1)
     void givenCommentData_whenCreateComment_thenCreatesNewComment() throws Exception {
-        final var commentName = "Test name";
-        final var menuButton = driver.findElement(By.cssSelector("button[aria-label='menu']"));
-        menuButton.click();
+        final var authorName = "Author";
+        final var comment = "new Comment";
+        driver.get(APP_URL + "/recipes/1");
+
         Thread.sleep(1000);
-        final var createCommentButton = driver.findElement(By.xpath("//*[contains(text(),'Create comment')]"));
-        createCommentButton.click();
-        final var nameInput = driver.findElement(By.cssSelector("input[data-test-id='name']"));
-        nameInput.sendKeys(commentName);
-        final var saveButton = driver.findElement(By.cssSelector("button[aria-label='save']"));
+        final var authorInput = driver.findElement(By.cssSelector("input[data-test-id='author']"));
+        authorInput.sendKeys(authorName);
+        final var contentInput = driver.findElement(By.cssSelector("textarea[data-test-id='content']"));
+        contentInput.sendKeys(comment);
+
+        final var saveButton = driver.findElement(By.xpath("//*[contains(text(),' Add comment ')]"));
         saveButton.click();
         Thread.sleep(1000);
-        driver.navigate().to(APP_URL);
+        driver.navigate().to(APP_URL + "/recipes/1");
         Thread.sleep(1000);
-        final var menuButtonAfterReload = driver.findElement(By.cssSelector("button[aria-label='menu']"));
-        menuButtonAfterReload.click();
-        Thread.sleep(1000);
-        final var commentElement = driver.findElement(By.xpath("//*[contains(text(),'" + commentName + "')]"));
+        final var commentElement = driver.findElement(By.xpath("//*[contains(text(),'" + comment + "')]"));
         assertThat(commentElement.isDisplayed()).isTrue();
-
-        //  TODO Dodawanie komentarzy
     }
 
     @Test
     @Order(2)
     void givenSomeComment_whenDeleteComment_thenCommentIsRemoved() throws Exception {
-        final var commentName = "Test name";
-        final var menuButton = driver.findElement(By.cssSelector("button[aria-label='menu']"));
-        menuButton.click();
+        final var authorName = "Author";
+        final var commentName = "Comment to be deleted";
+        driver.get(APP_URL + "/recipes/1");
         Thread.sleep(1000);
+
         final var commentToDelete = driver.findElement(By.xpath("//*[contains(text(),'" + commentName + "')]"));
         final var commentToDeleteParent = commentToDelete.findElement(By.xpath("./.."));
         final var deleteButton = commentToDeleteParent.findElement(By.cssSelector("button[aria-label='delete comment']"));
         deleteButton.click();
+
         Thread.sleep(1000);
-        final var js = (JavascriptExecutor) driver;
-        js.executeScript("document.querySelector('[data-test-id=\"confirm-button\"]').click();");
+        driver.navigate().to(APP_URL + "/recipes/1");
+
         Thread.sleep(1000);
         assertThat(driver.findElements(By.xpath("//*[contains(text(),'" + commentName + "')]")).isEmpty()).isTrue();
-
-        //  TODO Usuwanie komentarzy
     }
 
 }
