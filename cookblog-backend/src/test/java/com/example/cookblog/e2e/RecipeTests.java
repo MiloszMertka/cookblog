@@ -42,14 +42,14 @@ public class RecipeTests {
     @Test
     @Order(1)
     public void givenRecipeData_WhenCreateRecipe_ThenSeeRecipe() throws InterruptedException {
-        final var recipeTitle = "title";
-        final var recipeDescription = "description";
-        final var recipeInstructions = "instructions";
+        final var recipeTitle = "mytitle";
+        final var recipeDescription = "mydescription";
+        final var recipeInstructions = "myinstructions";
         final var preparationTimeInMinutes = "1";
-        final var portions = "1";
+        final var portions = "2";
         final var imagePath = "https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?q=80&w=3870&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
-        final var ingredientName = "ingredient";
-        final var calorificValue = "1";
+        final var ingredientName = "myingredient";
+        final var calorificValue = "3";
         driver.findElement(By.cssSelector("a[aria-label='create recipe']")).click();
 
         driver.findElement(By.cssSelector("input[data-test-id='title']")).sendKeys(recipeTitle);
@@ -72,28 +72,44 @@ public class RecipeTests {
         Thread.sleep(1000);
         clickNextUntilDisabled();
 
-//assert
+        final var titleElement = driver.findElement(By.xpath("//*[contains(text(),'" + recipeTitle + "')]"));
+        assertThat(titleElement.isDisplayed()).isTrue();
+        final var recipeDescriptionElement = driver.findElement(By.xpath("//*[contains(text(),'" + recipeDescription + "')]"));
+        assertThat(recipeDescriptionElement.isDisplayed()).isTrue();
     }
 
     @Test
-    @Order(1)
+    @Order(2)
     public void givenRecipe_WhenRead_ThenShouldRead() throws InterruptedException {
-        final var recipeTitle = "title";
-        final var recipeDescription = "description";
-        final var recipeInstructions = "instructions";
+        final var recipeTitle = "mytitle";
+        final var recipeDescription = "mydescription";
+        final var recipeInstructions = "myinstructions";
         final var preparationTimeInMinutes = "1";
-        final var portions = "1";
+        final var portions = "2";
         final var imagePath = "https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?q=80&w=3870&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
-        final var ingredientName = "ingredient";
-        final var calorificValue = "1";
+        final var ingredientName = "myingredient";
+        final var calorificValue = "3";
         driver.navigate().to(APP_URL);
         clickNextUntilDisabled();
         final var readButton = driver.findElement(By.cssSelector("a[aria-label='readRecipeButton']"));
         readButton.click();
         Thread.sleep(1000);
 
-        final var calorificValueInput = driver.findElement(By.cssSelector("li[aria-label='caloriesInformation']"));
-        assertThat(calorificValueInput.getText()).isEqualTo(calorificValue);
+        final var titleElement = driver.findElement(By.xpath("//*[contains(text(),'" + recipeTitle + "')]"));
+        assertThat(titleElement.isDisplayed()).isTrue();
+        final var recipeDescriptionElement = driver.findElement(By.xpath("//*[contains(text(),'" + recipeDescription + "')]"));
+        assertThat(recipeDescriptionElement.isDisplayed()).isTrue();
+        final var ingredientNameElement = driver.findElement(By.xpath("//*[contains(text(),'" + ingredientName + "')]"));
+        assertThat(ingredientNameElement.isDisplayed()).isTrue();
+        final var instructionsElement = driver.findElement(By.xpath("//*[contains(text(),'" + recipeInstructions + "')]"));
+        assertThat(instructionsElement.isDisplayed()).isTrue();
+
+        final var preparationTimeInMinutesElement = driver.findElement(By.xpath("//*[contains(text(),'" + preparationTimeInMinutes + " min." + "')]"));
+        assertThat(preparationTimeInMinutesElement.isDisplayed()).isTrue();
+        final var calorificValueElement = driver.findElement(By.xpath("//*[contains(text(),'" + calorificValue + " kcal" + "')]"));
+        assertThat(calorificValueElement.isDisplayed()).isTrue();
+        final var portionsElement = driver.findElement(By.xpath("//*[contains(normalize-space(),'" + portions + "')]"));
+        assertThat(portionsElement.isDisplayed()).isTrue();
     }
 
     @Test
