@@ -155,9 +155,8 @@ public class RecipesTests {
 
         var categorySelect = driver.findElement(By.cssSelector("mat-select[data-test-id='category']"));
         categorySelect.click();
-        var lastMatOption = driver.findElements(By.cssSelector("mat-option")).get(driver.findElements(By.cssSelector("mat-option")).size() - 1);
-        lastMatOption.click();
-        lastMatOption.click();
+        var firstMatOption = driver.findElements(By.cssSelector("mat-option")).get(0);
+        firstMatOption.click();
         final var saveButtonRec = driver.findElement(By.cssSelector("button[aria-label='save']"));
         saveButtonRec.click();
         Thread.sleep(1000);
@@ -165,10 +164,7 @@ public class RecipesTests {
         driver.get(APP_URL + "/categories/1");
         Thread.sleep(1000);
 
-
-
-        final var saveButton = driver.findElement(By.cssSelector("button[aria-label='save']"));
-        saveButton.click();
-        Thread.sleep(1000);
+        final var element = driver.findElement(By.xpath("//*[contains(text(),'" + recipeName + "')]"));
+        assertThat(element.isDisplayed()).isTrue();
     }
 }
