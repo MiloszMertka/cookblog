@@ -1,7 +1,10 @@
 package com.example.cookblog.e2e;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -103,7 +106,47 @@ public class RecipesTests {
     }
 
     @Test
-    void givenRecipeData_whenAddListOfIngredients_shouldSuccessfullyAdd() throws Exception {
+    public void givenRecipeData_whenAddInformationAboutPhotoUrl_shouldSuccessfullyAddPhoto() throws Exception {
+        String photoUrl = "PhotoUrl";
+        driver.get(APP_URL + "/recipes/edit/1");
+        Thread.sleep(1000);
+
+        var imageInput = driver.findElement(By.cssSelector("input[data-test-id='image']"));
+        imageInput.clear();
+        imageInput.sendKeys(photoUrl);
+        final var saveButton = driver.findElement(By.cssSelector("button[aria-label='save']"));
+        saveButton.click();
+        Thread.sleep(1000);
+
+        driver.get(APP_URL + "/recipes/edit/1");
+        Thread.sleep(1000);
+
+        imageInput = driver.findElement(By.cssSelector("input[data-test-id='image']"));
+        assertThat(imageInput.getAttribute("value")).isEqualTo(photoUrl);
+    }
+
+    @Test
+    public void givenRecipeQuery_whenSearchedWithQuery_shouldShowResultOfTheSearch() throws Exception {
+        String recipeName = "Name";
+        driver.get(APP_URL + "/recipes/edit/1");
+        Thread.sleep(1000);
+
+        var tilteInput = driver.findElement(By.cssSelector("input[data-test-id='title']"));
+        tilteInput.clear();
+        tilteInput.sendKeys(recipeName);
+        final var saveButton = driver.findElement(By.cssSelector("button[aria-label='save']"));
+        saveButton.click();
+        Thread.sleep(1000);
+
+        driver.get(APP_URL + "/recipes/edit/1");
+        Thread.sleep(1000);
+
+        final var element = driver.findElement(By.xpath("//*[contains(text(),'" + recipeName + "')]"));
+        assertThat(element.isDisplayed()).isTrue();
+    }
+
+    @Test
+    public void givenRecipeData_whenAddListOfIngredients_shouldSuccessfullyAdd() throws Exception {
         String ingredientName = "ingredientTestName";
         String amount = "99";
         driver.get(APP_URL + "/recipes/edit/1");
@@ -124,13 +167,39 @@ public class RecipesTests {
         driver.get(APP_URL + "/recipes/edit/1");
         Thread.sleep(1000);
         final var ingredientNamesAfterSave = driver.findElements(By.cssSelector("input[data-test-id='ingredient-name']"));
-        final var newIngredientNameAfterSave = ingredientNamesAfterSave.get(1);
+        final var newIngredientNameAfterSave = ingredientNamesAfterSave.get(0);
         String resultIngredientName = newIngredientNameAfterSave.getAttribute("value");
         final var ingredientAmountsAfterSave = driver.findElements(By.cssSelector("input[data-test-id='ingredient-amount']"));
-        final var newIngredientAmountsAfterSave = ingredientAmountsAfterSave.get(1);
+        final var newIngredientAmountsAfterSave = ingredientAmountsAfterSave.get(0);
         String resultIngredientAmount = newIngredientAmountsAfterSave.getAttribute("value");
 
         assertEquals(ingredientName, resultIngredientName);
         assertEquals(amount, resultIngredientAmount);
     }
+
+    @Test
+    public void givenRecipeData_whenRequestRecipeForCategory_shouldProperlyRetrieveRecipeOfThatCategory() throws Exception {
+        String recipeName = "Name";
+        driver.get(APP_URL + "/recipes/edit/1");
+        Thread.sleep(1000);
+
+        var tilteInput = driver.findElement(By.cssSelector("input[data-test-id='title']"));
+        tilteInput.clear();
+        tilteInput.sendKeys(recipeName);
+
+        var categorySelect = driver.findElement(By.cssSelector("mat-select[data-test-id='category']"));
+        categorySelect.click();
+        var firstMatOption = driver.findElements(By.cssSelector("mat-option")).get(0);
+        firstMatOption.click();
+        final var saveButtonRec = driver.findElement(By.cssSelector("button[aria-label='save']"));
+        saveButtonRec.click();
+        Thread.sleep(1000);
+
+        driver.get(APP_URL + "/categories/1");
+        Thread.sleep(1000);
+
+        final var element = driver.findElement(By.xpath("//*[contains(text(),'" + recipeName + "')]"));
+        assertThat(element.isDisplayed()).isTrue();
+    }
+
 }
