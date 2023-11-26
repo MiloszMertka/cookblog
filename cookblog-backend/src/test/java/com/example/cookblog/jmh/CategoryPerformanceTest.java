@@ -61,8 +61,9 @@ public class CategoryPerformanceTest {
         recipeMapper = this.context.getBean(RecipeMapper.class);
 
         category = Category.builder()
-                .name("category")
+                .name("category" + System.currentTimeMillis())
                 .build();
+        categoryRepository.save(category);
     }
 
     @TearDown
@@ -83,8 +84,10 @@ public class CategoryPerformanceTest {
     @Benchmark
     @Warmup(iterations = 0)
     public void createRecipeBenchmark() {
+        String uniqueRecipeName = "recipe" + System.currentTimeMillis();
+
         recipeService.createRecipe(CreateRecipeRequest.builder()
-                .title("title")
+                .title(uniqueRecipeName)
                 .description("description")
                 .instructions("instructions")
                 .ingredients(Set.of(IngredientResource.builder()
@@ -97,7 +100,7 @@ public class CategoryPerformanceTest {
                 .image(ImageResource.builder()
                         .path("image-path")
                         .build())
-                .category(null)
+                .category(categoryMapper.mapCategoryToCategoryResource(categoryRepository.findById(category.getId()).orElse(null)))
                 .build());
     }
 
