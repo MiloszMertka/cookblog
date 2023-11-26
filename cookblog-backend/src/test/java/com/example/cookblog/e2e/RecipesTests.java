@@ -1,17 +1,16 @@
 package com.example.cookblog.e2e;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestMethodOrder(OrderAnnotation.class)
 public class RecipesTests {
@@ -108,6 +107,46 @@ public class RecipesTests {
     }
 
     @Test
+    public void givenRecipeData_whenAddInformationAboutPhotoUrl_shouldSuccessfullyAddPhoto() throws Exception {
+        String photoUrl = "PhotoUrl";
+        driver.get(APP_URL + "/recipes/edit/1");
+        Thread.sleep(1000);
+
+        var imageInput = driver.findElement(By.cssSelector("input[data-test-id='image']"));
+        imageInput.clear();
+        imageInput.sendKeys(photoUrl);
+        final var saveButton = driver.findElement(By.cssSelector("button[aria-label='save']"));
+        saveButton.click();
+        Thread.sleep(1000);
+
+        driver.get(APP_URL + "/recipes/edit/1");
+        Thread.sleep(1000);
+
+        imageInput = driver.findElement(By.cssSelector("input[data-test-id='image']"));
+        assertThat(imageInput.getAttribute("value")).isEqualTo(photoUrl);
+    }
+
+    @Test
+    public void givenRecipeQuery_whenSearchedWithQuery_shouldShowResultOfTheSearch() throws Exception {
+        String recipeName = "Name";
+        driver.get(APP_URL + "/recipes/edit/1");
+        Thread.sleep(1000);
+
+        var tilteInput = driver.findElement(By.cssSelector("input[data-test-id='title']"));
+        tilteInput.clear();
+        tilteInput.sendKeys(recipeName);
+        final var saveButton = driver.findElement(By.cssSelector("button[aria-label='save']"));
+        saveButton.click();
+        Thread.sleep(1000);
+
+        driver.get(APP_URL + "/recipes/edit/1");
+        Thread.sleep(1000);
+
+        final var element = driver.findElement(By.xpath("//*[contains(text(),'" + recipeName + "')]"));
+        assertThat(element.isDisplayed()).isTrue();
+    }
+
+    @Test
     void givenRecipeData_whenAddListOfIngredients_shouldSuccessfullyAdd() throws Exception {
         String ingredientName = "ingredientTestName";
         String amount = "99";
@@ -137,4 +176,30 @@ public class RecipesTests {
         assertEquals(resultIngredientName, ingredientName);
         assertEquals(resultIngredientAmount, amount);
     }
+
+    @Test
+    public void givenRecipeData_whenRequestRecipeForCategory_shouldProperlyRetrieveRecipeOfThatCategory() throws Exception {
+        String recipeName = "Name";
+        driver.get(APP_URL + "/recipes/edit/1");
+        Thread.sleep(1000);
+
+        var tilteInput = driver.findElement(By.cssSelector("input[data-test-id='title']"));
+        tilteInput.clear();
+        tilteInput.sendKeys(recipeName);
+
+        var categorySelect = driver.findElement(By.cssSelector("mat-select[data-test-id='category']"));
+        categorySelect.click();
+        var firstMatOption = driver.findElements(By.cssSelector("mat-option")).get(0);
+        firstMatOption.click();
+        final var saveButtonRec = driver.findElement(By.cssSelector("button[aria-label='save']"));
+        saveButtonRec.click();
+        Thread.sleep(1000);
+
+        driver.get(APP_URL + "/categories/1");
+        Thread.sleep(1000);
+
+        final var element = driver.findElement(By.xpath("//*[contains(text(),'" + recipeName + "')]"));
+        assertThat(element.isDisplayed()).isTrue();
+    }
+
 }
