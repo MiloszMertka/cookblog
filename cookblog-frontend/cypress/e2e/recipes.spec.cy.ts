@@ -59,6 +59,10 @@ describe('Recipes Tests', () => {
     cy.fixture('recipe').then((recipe) => {
       cy.visit('/recipes/edit/1');
       cy.wait(1000);
+      cy.get('button[aria-label="delete ingredient"]').each(($button) => {
+        cy.wrap($button).click();
+      });
+      cy.wait(1000);
       cy.contains('Add ingredient').click();
       cy.get('input[data-test-id="ingredient-name"]').last().type(recipe.ingredientName);
       cy.get('input[data-test-id="ingredient-amount"]').last().clear().type(recipe.amount);
@@ -66,8 +70,8 @@ describe('Recipes Tests', () => {
       cy.wait(1000);
       cy.visit('/recipes/edit/1');
       cy.wait(1000);
-      cy.get('input[data-test-id="ingredient-name"]').eq(1).should('have.value', recipe.ingredientName);
-      cy.get('input[data-test-id="ingredient-amount"]').eq(1).should('have.value', recipe.amount);
+      cy.get('input[data-test-id="ingredient-name"]').eq(0).should('have.value', recipe.ingredientName);
+      cy.get('input[data-test-id="ingredient-amount"]').eq(0).should('have.value', recipe.amount);
     });
   });
 });
