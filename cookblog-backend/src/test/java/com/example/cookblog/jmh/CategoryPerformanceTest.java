@@ -14,16 +14,15 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
-public class PerformanceTest {
+public class CategoryPerformanceTest {
 
-    private CookblogApplication app;
     private ConfigurableApplicationContext context;
     private CategoryUseCases categoryService;
 
     @Test
     public void contextLoads() throws RunnerException {
         Options opt = new OptionsBuilder()
-                .include(PerformanceTest.class.getSimpleName())
+                .include(CategoryPerformanceTest.class.getSimpleName())
                 .forks(1)
                 .build();
         new Runner(opt).run();
