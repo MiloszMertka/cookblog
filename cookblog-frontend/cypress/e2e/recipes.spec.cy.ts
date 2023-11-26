@@ -100,4 +100,63 @@ describe('Recipes Tests', () => {
         .should('have.value', recipe.amount);
     });
   });
+
+  it('Should properly retrieve recipe of a category', () => {
+    cy.fixture('recipe').then((recipe) => {
+    const recipeName = "Name";
+
+    cy.visit('/recipes/edit/1');
+    cy.wait(1000);
+
+    cy.get('input[data-test-id="title"]').clear().type(recipeName);
+    cy.get('mat-select[data-test-id="category"]').click();
+    cy.get('mat-option').first().click();
+    cy.get('button[aria-label="save"]').click();
+
+    cy.wait(1000);
+
+    cy.visit('/categories/1');
+    cy.wait(1000);
+
+    cy.contains(recipeName).should('exist');
+    });
+  });
+
+  it('Should show result of the search', () => {
+    cy.fixture('recipe').then((recipe) => {
+      const recipeName = "Name";
+
+      cy.visit('/recipes/edit/1');
+      cy.wait(1000);
+
+      cy.get('input[data-test-id="title"]').clear().type(recipeName);
+      cy.get('button[aria-label="save"]').click();
+
+      cy.wait(1000);
+
+      cy.visit('/recipes/edit/1');
+      cy.wait(1000);
+
+      cy.contains(recipeName).should('exist');
+    });
+  });
+
+  it('Should successfully add photo', () => {
+    cy.fixture('recipe').then((recipe) => {
+      const photoUrl = "PhotoUrl";
+
+      cy.visit('/recipes/edit/1');
+      cy.wait(1000);
+
+      cy.get('input[data-test-id="image"]').clear().type(photoUrl);
+      cy.get('button[aria-label="save"]').click();
+
+      cy.wait(1000);
+
+      cy.visit('/recipes/edit/1');
+      cy.wait(1000);
+
+      cy.get('input[data-test-id="image"]').should('have.value', photoUrl);
+    });
+  });
 });

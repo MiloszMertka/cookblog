@@ -50,7 +50,7 @@ public class CommentsTests {
     @Order(2)
     void givenSomeComment_whenDeleteComment_thenCommentIsRemoved() throws Exception {
         final var authorName = "Author";
-        final var commentName = "Comment to be deleted";
+        final var commentName = "new Comment";
         driver.get(APP_URL + "/recipes/1");
         Thread.sleep(1000);
 
