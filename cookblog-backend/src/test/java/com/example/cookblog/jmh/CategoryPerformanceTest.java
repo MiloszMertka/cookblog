@@ -1,8 +1,10 @@
 package com.example.cookblog.jmh;
 
 import com.example.cookblog.CookblogApplication;
+import com.example.cookblog.dto.requests.CommentRecipeRequest;
 import com.example.cookblog.dto.requests.CreateCategoryRequest;
 import com.example.cookblog.dto.requests.CreateRecipeRequest;
+import com.example.cookblog.dto.requests.UpdateRecipeRequest;
 import com.example.cookblog.dto.resources.ImageResource;
 import com.example.cookblog.dto.resources.IngredientResource;
 import com.example.cookblog.dto.resources.QuantityResource;
@@ -64,6 +66,24 @@ public class CategoryPerformanceTest {
                 .name("category" + System.currentTimeMillis())
                 .build();
         categoryRepository.save(category);
+
+        recipe = Recipe.builder()
+                .title("recipe" + System.currentTimeMillis())
+                .description("description")
+                .instructions("instructions")
+                .ingredients(Set.of(Ingredient.builder()
+                        .name("ingredient")
+                        .quantity(Quantity.builder()
+                                .amount(1)
+                                .unit(Unit.GRAM)
+                                .build())
+                        .build()))
+                .image(Image.builder()
+                        .path("image-path")
+                        .build())
+                .category(category)
+                .build();
+        recipeRepository.save(recipe);
     }
 
     @TearDown
@@ -104,5 +124,57 @@ public class CategoryPerformanceTest {
                 .build());
     }
 
+    @Benchmark
+    @Warmup(iterations = 0)
+    public void updateRecipeBenchmark() {
+        recipeService.updateRecipe(recipe.getId(), UpdateRecipeRequest.builder()
+                .title("updatedRecipe" + System.currentTimeMillis())
+                .description("description")
+                .instructions("instructions")
+                .ingredients(Set.of(IngredientResource.builder()
+                        .name("ingredient")
+                        .quantity(QuantityResource.builder()
+                                .amount(1)
+                                .unit(Unit.GRAM)
+                                .build())
+                        .build()))
+                .image(ImageResource.builder()
+                        .path("image-path")
+                        .build())
+                .category(categoryMapper.mapCategoryToCategoryResource(categoryRepository.findById(category.getId()).orElse(null)))
+                .build());
+    }
 
+    @Benchmark
+    @Warmup(iterations = 0)
+    public void deleteRecipeBenchmark() {
+        recipeService.deleteRecipe(recipe.getId());
+    }
+
+    @Benchmark
+    @Warmup(iterations = 0)
+    @Measurement(iterations = 1)
+    public void commentRecipeBenchmark() {
+        recipeService.commentRecipe(recipe.getId(), CommentRecipeRequest.builder()
+                .content("content")
+                .author("sampleAuthor")
+                .build());
+    }
+
+    @Benchmark
+    @Warmup(iterations = 0)
+    @Measurement(iterations = 1)
+    public void deleteCommentBenchmark() {
+        recipe = recipeRepository.findById(recipe.getId()).orElse(null);
+        if (recipe == null) {
+            return;
+        }
+
+        Comment comment = recipe.getComments().stream().findFirst().orElse(null);
+        if (comment == null) {
+            return;
+        }
+
+        recipeService.deleteComment(recipe.getId(), comment.getId());
+    }
 }
