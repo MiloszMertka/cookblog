@@ -13,6 +13,7 @@ public class CommentsTests {
 
     private static final String APP_URL = "http://localhost:4200";
     private final WebDriver driver = new SeleniumConfig().getDriver();
+    private final String comment = "new Comment";
 
     @BeforeEach
     void setUp() {
@@ -28,7 +29,7 @@ public class CommentsTests {
     @Order(1)
     void givenCommentData_whenCreateComment_thenCreatesNewComment() throws Exception {
         final var authorName = "Author";
-        final var comment = "new Comment";
+
         driver.get(APP_URL + "/recipes/1");
 
         Thread.sleep(1000);
@@ -49,21 +50,18 @@ public class CommentsTests {
     @Test
     @Order(2)
     void givenSomeComment_whenDeleteComment_thenCommentIsRemoved() throws Exception {
-        final var authorName = "Author";
-        final var commentName = "new Comment";
         driver.get(APP_URL + "/recipes/1");
         Thread.sleep(1000);
 
-        final var commentToDelete = driver.findElement(By.xpath("//*[contains(text(),'" + commentName + "')]"));
-        final var commentToDeleteParent = commentToDelete.findElement(By.xpath("./.."));
-        final var deleteButton = commentToDeleteParent.findElement(By.cssSelector("button[aria-label='delete comment']"));
-        deleteButton.click();
+        final var commentToDelete = driver.findElement(By.xpath("//*[contains(text(),'" + comment + "')]"));
+        final var commentToDeleteParent = commentToDelete.findElements(By.xpath("./.."));
+        commentToDeleteParent.forEach(obj -> obj.findElement(By.cssSelector("button[aria-label='delete comment']")).click());
 
         Thread.sleep(1000);
         driver.navigate().to(APP_URL + "/recipes/1");
 
         Thread.sleep(1000);
-        assertThat(driver.findElements(By.xpath("//*[contains(text(),'" + commentName + "')]")).isEmpty()).isTrue();
+        assertThat(driver.findElements(By.xpath("//*[contains(text(),'" + comment + "')]")).isEmpty()).isTrue();
     }
 
 }
