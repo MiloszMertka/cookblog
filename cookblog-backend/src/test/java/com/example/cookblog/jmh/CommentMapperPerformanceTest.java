@@ -20,7 +20,7 @@ public class CommentMapperPerformanceTest {
 
     private ConfigurableApplicationContext context;
 
-    private CommentMapper mapper;
+    private CommentMapper commentMapper;
     private Comment comment;
     private CommentRecipeRequest commentRequest;
 
@@ -38,7 +38,7 @@ public class CommentMapperPerformanceTest {
     public void setup() {
         this.context = new SpringApplication(CookblogApplication.class).run();
 
-        mapper = this.context.getBean(CommentMapper.class);
+        commentMapper = this.context.getBean(CommentMapper.class);
     }
 
     @TearDown
@@ -56,7 +56,7 @@ public class CommentMapperPerformanceTest {
             .author("author")
             .build();
 
-        mapper.mapCommentToCommentResource(comment);
+        commentMapper.mapCommentToCommentResource(comment);
     }
 
     @Benchmark
@@ -68,6 +68,6 @@ public class CommentMapperPerformanceTest {
                 .author("author")
                 .build();
 
-        mapper.mapCommentRecipeRequestToComment(commentRequest);
+        commentMapper.mapCommentRecipeRequestToComment(commentRequest);
     }
 }

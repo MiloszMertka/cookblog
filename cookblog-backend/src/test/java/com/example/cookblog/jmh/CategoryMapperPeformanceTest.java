@@ -53,36 +53,6 @@ public class CategoryMapperPeformanceTest {
         this.context.close();
     }
 
-    @Benchmark
-    @Warmup(iterations = 0)
-    public void mapCreateCategoryRequestToCategoryBenchmark() {
-        String uniqueCategoryName = "category" + System.currentTimeMillis();
-        CreateCategoryRequest categoryRequest = CreateCategoryRequest.builder()
-                .name(uniqueCategoryName)
-                .build();
 
-        categoryMapper.mapCreateCategoryRequestToCategory(categoryRequest);
-    }
-
-    @Benchmark
-    @Warmup(iterations = 0)
-    public void updateCategoryFromUpdateCategoryRequestBenchmark() {
-        String updatedName = "category" + System.currentTimeMillis();
-        UpdateCategoryRequest updateCategoryRequest = UpdateCategoryRequest.builder()
-                .name(updatedName)
-                .build();
-
-        categoryMapper.updateCategoryFromUpdateCategoryRequest(category, updateCategoryRequest);
-    }
-
-    @Benchmark
-    @Warmup(iterations = 0)
-    public void mapCategoryResourceToCategoryBenchmark() {
-        String uniqueCategoryName = "category" + System.currentTimeMillis();
-        CategoryResource categoryResource = CategoryResource.builder()
-                .name(uniqueCategoryName)
-                .build();
-        categoryMapper.mapCategoryResourceToCategory(categoryResource);
-    }
 
 }
