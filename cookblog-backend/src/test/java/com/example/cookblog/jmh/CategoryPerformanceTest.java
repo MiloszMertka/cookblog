@@ -1,10 +1,7 @@
 package com.example.cookblog.jmh;
 
 import com.example.cookblog.CookblogApplication;
-import com.example.cookblog.dto.requests.CommentRecipeRequest;
-import com.example.cookblog.dto.requests.CreateCategoryRequest;
-import com.example.cookblog.dto.requests.CreateRecipeRequest;
-import com.example.cookblog.dto.requests.UpdateRecipeRequest;
+import com.example.cookblog.dto.requests.*;
 import com.example.cookblog.dto.resources.ImageResource;
 import com.example.cookblog.dto.resources.IngredientResource;
 import com.example.cookblog.dto.resources.QuantityResource;
@@ -25,7 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
@@ -40,7 +41,9 @@ public class CategoryPerformanceTest {
     private RecipeMapper recipeMapper;
 
     private Recipe recipe;
+    private Long recipeId;
     private Category category;
+    private Long categoryId;
 
     @Test
     public void contextLoads() throws RunnerException {
@@ -67,6 +70,8 @@ public class CategoryPerformanceTest {
                 .build();
         categoryRepository.save(category);
 
+        categoryId = categoryService.getAllCategories().get(0).id();
+
         recipe = Recipe.builder()
                 .title("recipe" + System.currentTimeMillis())
                 .description("description")
@@ -84,6 +89,8 @@ public class CategoryPerformanceTest {
                 .category(category)
                 .build();
         recipeRepository.save(recipe);
+
+        recipeId = recipeRepository.findAll().get(0).getId();
     }
 
     @TearDown
@@ -176,5 +183,72 @@ public class CategoryPerformanceTest {
         }
 
         recipeService.deleteComment(recipe.getId(), comment.getId());
+    }
+
+    @Benchmark
+    @Warmup(iterations = 0)
+    public void getRecipeBenchmark() {
+
+        recipeService.getRecipe(recipeId);
+    }
+
+    @Benchmark
+    @Warmup(iterations = 0)
+    public void updateCategoryBenchmark() {
+
+        categoryService.updateCategory(categoryId, UpdateCategoryRequest.builder()
+                .name("category" + System.currentTimeMillis())
+                .build());
+
+    }
+
+    @Benchmark
+    @Warmup(iterations = 0)
+    public void getCategoryBenchmark() {
+
+        categoryService.getCategoryWithItsRecipes(categoryId);
+    }
+
+    @Benchmark
+    @Warmup(iterations = 0)
+    @Measurement(iterations = 1)
+    public void deleteCategoryBenchmark() {
+
+        categoryService.deleteCategory(categoryId);
+    }
+
+    @Benchmark
+    @Warmup(iterations = 0)
+    public void addListOfIngredientsBenchmark() {
+        var recipe = recipeService.getRecipe(recipeId);
+        List<IngredientResource> ingredients = new ArrayList<>();
+        ingredients.add(IngredientResource.builder()
+                .name("ingredient1")
+                .quantity(QuantityResource.builder()
+                        .amount(1)
+                        .unit(Unit.GRAM)
+                        .build())
+                .build());
+        ingredients.add(IngredientResource.builder()
+                .name("ingredient2")
+                .quantity(QuantityResource.builder()
+                        .amount(1)
+                        .unit(Unit.GRAM)
+                        .build())
+                .build());
+
+        UpdateRecipeRequest request = UpdateRecipeRequest.builder()
+                .title(recipe.title())
+                .category(recipe.category())
+                .ingredients(new HashSet<>(ingredients))
+                .description(recipe.description())
+                .image(recipe.image())
+                .instructions(recipe.instructions())
+                .portions(recipe.portions())
+                .calorificValue(recipe.calorificValue())
+                .preparationTimeInMinutes(recipe.preparationTimeInMinutes())
+                .build();
+
+        recipeService.updateRecipe(recipeId, request);
     }
 }
