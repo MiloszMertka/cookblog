@@ -20,7 +20,6 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.domain.Pageable;
@@ -29,11 +28,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
-public class CategoryPerformanceTest {
+public class PerformanceTest {
 
     private ConfigurableApplicationContext context;
     private CategoryUseCases categoryService;
@@ -57,7 +55,7 @@ public class CategoryPerformanceTest {
     @Test
     public void contextLoads() throws RunnerException {
         Options opt = new OptionsBuilder()
-                .include(CategoryPerformanceTest.class.getSimpleName())
+                .include(PerformanceTest.class.getSimpleName())
                 .forks(1)
                 .build();
         new Runner(opt).run();
