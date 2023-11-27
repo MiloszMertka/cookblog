@@ -54,7 +54,7 @@ public class CommentsTests {
         Thread.sleep(1000);
 
         final var commentToDelete = driver.findElement(By.xpath("//*[contains(text(),'" + comment + "')]"));
-        final var commentToDeleteParent = commentToDelete.findElements(By.xpath("./.."));
+        final var commentToDeleteParent = commentToDelete.findElements(By.xpath("./../.."));
         commentToDeleteParent.forEach(obj -> obj.findElement(By.cssSelector("button[aria-label='delete comment']")).click());
 
         Thread.sleep(1000);
