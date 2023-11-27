@@ -21,6 +21,7 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -44,6 +45,7 @@ public class CategoryPerformanceTest {
     private Long recipeId;
     private Category category;
     private Long categoryId;
+    private Category categoryToDelete;
 
     @Test
     public void contextLoads() throws RunnerException {
@@ -71,6 +73,11 @@ public class CategoryPerformanceTest {
         categoryRepository.save(category);
 
         categoryId = categoryService.getAllCategories().get(0).id();
+
+        categoryToDelete = Category.builder()
+                .name("categoryToDelete" + System.currentTimeMillis())
+                .build();
+        categoryRepository.save(categoryToDelete);
 
         recipe = Recipe.builder()
                 .title("recipe" + System.currentTimeMillis())
@@ -214,7 +221,7 @@ public class CategoryPerformanceTest {
     @Measurement(iterations = 1)
     public void deleteCategoryBenchmark() {
 
-        categoryService.deleteCategory(categoryId);
+        categoryService.deleteCategory(categoryToDelete.getId());
     }
 
     @Benchmark
@@ -251,4 +258,39 @@ public class CategoryPerformanceTest {
 
         recipeService.updateRecipe(recipeId, request);
     }
+
+    @Benchmark
+    @Warmup(iterations = 0)
+    public void getPageOfRecipesBenchmark() {
+        recipeService.getPageOfRecipes(Pageable.ofSize(10));
+    }
+
+    @Benchmark
+    @Warmup(iterations = 0)
+    public void searchRecipesBenchmark() {
+        recipeService.searchRecipes("maiores");
+    }
+
+    @Benchmark
+    @Warmup(iterations = 0)
+    public void getRecipeCategory() {
+        recipeService.getRecipe(1L);
+    }
+
+    @Benchmark
+    @Warmup(iterations = 0)
+    public void mapCategoryToCategoryResourceBenchmark() {
+        categoryMapper.mapCategoryToCategoryResource(Category.builder()
+                .name("category")
+                .build());
+    }
+
+    @Benchmark
+    @Warmup(iterations = 0)
+    public void mapCategoryWithRecipesToCategoryResourceBenchmark() {
+        categoryMapper.mapCategoryWithRecipesToCategoryResource(Category.builder()
+                .name("category")
+                .build());
+    }
+
 }
