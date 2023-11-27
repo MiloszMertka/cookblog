@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -146,19 +147,20 @@ public class RecipesTests {
     }
 
     @Test
-    public void givenRecipeData_whenAddListOfIngredients_shouldSuccessfullyAdd() throws Exception {
+    void givenRecipeData_whenAddListOfIngredients_shouldSuccessfullyAdd() throws Exception {
         String ingredientName = "ingredientTestName";
         String amount = "99";
         driver.get(APP_URL + "/recipes/edit/1");
         Thread.sleep(1000);
+        final var deleteButton = driver.findElements(By.cssSelector("button[aria-label='delete ingredient']"));
+        deleteButton.forEach(WebElement::click);
+
         final var addIngredientButton = driver.findElement(By.xpath("//*[contains(text(),'Add ingredient')]"));
         addIngredientButton.click();
         Thread.sleep(1000);
-        final var ingredientsNameInputs = driver.findElements(By.cssSelector("input[data-test-id='ingredient-name']"));
-        final var newIngredientNameInput = ingredientsNameInputs.get(ingredientsNameInputs.size() - 1);
+        final var newIngredientNameInput = driver.findElement(By.cssSelector("input[data-test-id='ingredient-name']"));
         newIngredientNameInput.sendKeys(ingredientName);
-        final var ingredientsAmounts = driver.findElements(By.cssSelector("input[data-test-id='ingredient-amount']"));
-        final var newIngredientAmount = ingredientsAmounts.get(ingredientsAmounts.size() - 1);
+        final var newIngredientAmount = driver.findElement(By.cssSelector("input[data-test-id='ingredient-amount']"));
         newIngredientAmount.clear();
         newIngredientAmount.sendKeys(amount);
         final var saveButton = driver.findElement(By.cssSelector("button[aria-label='save']"));
@@ -166,15 +168,13 @@ public class RecipesTests {
         Thread.sleep(1000);
         driver.get(APP_URL + "/recipes/edit/1");
         Thread.sleep(1000);
-        final var ingredientNamesAfterSave = driver.findElements(By.cssSelector("input[data-test-id='ingredient-name']"));
-        final var newIngredientNameAfterSave = ingredientNamesAfterSave.get(0);
+        final var newIngredientNameAfterSave = driver.findElement(By.cssSelector("input[data-test-id='ingredient-name']"));
         String resultIngredientName = newIngredientNameAfterSave.getAttribute("value");
-        final var ingredientAmountsAfterSave = driver.findElements(By.cssSelector("input[data-test-id='ingredient-amount']"));
-        final var newIngredientAmountsAfterSave = ingredientAmountsAfterSave.get(0);
+        final var newIngredientAmountsAfterSave = driver.findElement(By.cssSelector("input[data-test-id='ingredient-amount']"));
         String resultIngredientAmount = newIngredientAmountsAfterSave.getAttribute("value");
 
-        assertEquals(ingredientName, resultIngredientName);
-        assertEquals(amount, resultIngredientAmount);
+        assertEquals(resultIngredientName, ingredientName);
+        assertEquals(resultIngredientAmount, amount);
     }
 
     @Test
